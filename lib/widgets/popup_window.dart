@@ -1,12 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_deer/routers/fluro_navigator.dart';
 
 ///create by elileo on 2018/12/21
 ///https://github.com/elileo1/flutter_travel_friends/blob/master/lib/widget/PopupWindow.dart
 ///
 /// weilu update： 去除了IntrinsicWidth限制，添加了默认蒙版
-const Duration _kWindowDuration = Duration(milliseconds: 0);
+const Duration _kWindowDuration = Duration(milliseconds: 300);
 const double _kWindowCloseIntervalEnd = 2.0 / 3.0;
 const double _kWindowMaxWidth = 240.0;
 const double _kWindowMinWidth = 48.0;
@@ -39,12 +38,11 @@ Future<T> showPopupWindow<T>({
 
   return Navigator.push(context,
       _PopupWindowRoute(
-        context: context,
         position: position,
         child: child,
         elevation: elevation,
         semanticLabel: label,
-        theme: Theme.of(context, shadowThemeOnly: true),
+        theme: Theme.of(context),
         barrierLabel:
         MaterialLocalizations.of(context).modalBarrierDismissLabel,
         fullWidth: fullWidth,
@@ -55,19 +53,16 @@ Future<T> showPopupWindow<T>({
 ///自定义弹窗路由：参照_PopupMenuRoute修改的
 class _PopupWindowRoute<T> extends PopupRoute<T> {
   _PopupWindowRoute({
-    @required BuildContext context,
     RouteSettings settings,
     this.child,
     this.position,
-    this.elevation: 8.0,
+    this.elevation = 8.0,
     this.theme,
     this.barrierLabel,
     this.semanticLabel,
     this.fullWidth,
     this.isShowBg,
-  }) : super(settings: settings) {
-    assert(child != null);
-  }
+  }) : super(settings: settings);
 
   final Widget child;
   final RelativeRect position;
@@ -117,17 +112,18 @@ class _PopupWindowRoute<T> extends PopupRoute<T> {
       removeRight: true,
       child: Builder(
         builder: (BuildContext context) {
-          return Material(
-            type: MaterialType.transparency,
-            child: GestureDetector(
-              onTap: () => NavigatorUtils.goBack(context),
+          return GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: Material(
+              type: MaterialType.transparency,
               child: Container(
                 width: double.infinity,
                 height: double.infinity,
                 color: isShowBg ? const Color(0x99000000) : null,
                 child: CustomSingleChildLayout(
                   delegate: _PopupWindowLayoutDelegate(
-                      position, null, Directionality.of(context)),
+                    position, null, Directionality.of(context)
+                  ),
                   child: win,
                 ),
               ),
@@ -154,14 +150,13 @@ class _PopupWindow<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double length = 10.0;
-    final double unit = 1.0 /
+    const double length = 10.0;
+    const double unit = 1.0 /
         (length + 1.5); // 1.0 for the width and 0.5 for the last item's fade.
 
-    final CurveTween opacity =
-    CurveTween(curve: const Interval(0.0, 1.0 / 3.0));
-    final CurveTween width = CurveTween(curve: Interval(0.0, unit));
-    final CurveTween height = CurveTween(curve: Interval(0.0, unit * length));
+    final CurveTween opacity = CurveTween(curve: const Interval(0.0, 1.0 / 3.0));
+    final CurveTween width = CurveTween(curve: const Interval(0.0, unit));
+    final CurveTween height = CurveTween(curve: const Interval(0.0, unit * length));
 
     final Widget child = ConstrainedBox(
       constraints: BoxConstraints(
@@ -169,8 +164,7 @@ class _PopupWindow<T> extends StatelessWidget {
         maxWidth: fullWidth ? double.infinity : _kWindowMaxWidth,
       ),
       child: SingleChildScrollView(
-        padding:
-        const EdgeInsets.symmetric(vertical: _kWindowVerticalPadding),
+        padding: const EdgeInsets.symmetric(vertical: _kWindowVerticalPadding),
         child: route.child,
       )
     );
@@ -217,7 +211,7 @@ class _PopupWindowLayoutDelegate extends SingleChildLayoutDelegate {
     // The menu can be at most the size of the overlay minus 8.0 pixels in each
     // direction.
     return BoxConstraints.loose(constraints.biggest -
-        const Offset(_kWindowScreenPadding * 2.0, _kWindowScreenPadding * 2.0));
+        const Offset(_kWindowScreenPadding * 2.0, _kWindowScreenPadding * 2.0) as Size);
   }
 
   @override

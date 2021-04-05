@@ -26,13 +26,17 @@ class Log {
 
   static void json(String msg, {String tag = tag}) {
     if (!Constant.inProduction) {
-      final dynamic data = convert.json.decode(msg);
-      if (data is Map) {
-        _printMap(data);
-      } else if (data is List) {
-        _printList(data);
-      } else
-        LogUtil.v(msg, tag: tag);
+      try {
+        final dynamic data = convert.json.decode(msg);
+        if (data is Map) {
+          _printMap(data);
+        } else if (data is List) {
+          _printList(data);
+        } else
+          LogUtil.v(msg, tag: tag);
+      } catch(e) {
+        LogUtil.e(msg, tag: tag);
+      }
     }
   }
 
@@ -42,21 +46,25 @@ class Log {
     final String initialIndent = _indent(tabs);
     tabs++;
 
-    if (isRoot || isListItem) LogUtil.v('$initialIndent{', tag: tag);
+    if (isRoot || isListItem) {
+      LogUtil.v('$initialIndent{', tag: tag);
+    }
 
-    data.keys.toList().asMap().forEach((index, key) {
+    data.keys.toList().asMap().forEach((index, dynamic key) {
       final bool isLast = index == data.length - 1;
-      var value = data[key];
-      if (value is String) value = '\"$value\"';
+      dynamic value = data[key];
+      if (value is String) {
+        value = '"$value"';
+      }
       if (value is Map) {
-        if (value.length == 0)
+        if (value.isEmpty)
           LogUtil.v('${_indent(tabs)} $key: $value${!isLast ? ',' : ''}', tag: tag);
         else {
           LogUtil.v('${_indent(tabs)} $key: {', tag: tag);
           _printMap(value, tabs: tabs);
         }
       } else if (value is List) {
-        if (value.length == 0) {
+        if (value.isEmpty) {
           LogUtil.v('${_indent(tabs)} $key: ${value.toString()}', tag: tag);
         } else {
           LogUtil.v('${_indent(tabs)} $key: [', tag: tag);
@@ -73,10 +81,10 @@ class Log {
   }
 
   static void _printList(List list, {String tag = tag, int tabs = 1}) {
-    list.asMap().forEach((i, e) {
+    list.asMap().forEach((i, dynamic e) {
       final bool isLast = i == list.length - 1;
       if (e is Map) {
-        if (e.length == 0) {
+        if (e.isEmpty) {
           LogUtil.v('${_indent(tabs)}  $e${!isLast ? ',' : ''}', tag: tag);
         } else {
           _printMap(e, tabs: tabs + 1, isListItem: true, isLast: isLast);

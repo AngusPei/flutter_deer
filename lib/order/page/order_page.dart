@@ -18,6 +18,9 @@ import '../order_router.dart';
 
 /// design/3订单/index.html
 class OrderPage extends StatefulWidget {
+
+  const OrderPage({Key key}) : super(key: key);
+
   @override
   _OrderPageState createState() => _OrderPageState();
 }
@@ -61,7 +64,7 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    isDark = ThemeUtils.isDark(context);
+    isDark = context.isDark;
     return ChangeNotifierProvider<OrderPageProvider>(
       create: (_) => provider,
       child: Scaffold(
@@ -74,8 +77,8 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
                 width: double.infinity,
                 child: isDark ? null : const DecoratedBox(
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: const [Color(0xFF5793FA), Color(0xFF4647FA)])
-                  )
+                    gradient: LinearGradient(colors: [Color(0xFF5793FA), Color(0xFF4647FA)]),
+                  ),
                 ),
               ),
             ),
@@ -100,12 +103,12 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
                   key: const Key('pageView'),
                   itemCount: 5,
                   controller: _pageController,
-                  itemBuilder: (_, index) => OrderListPage(index: index)
+                  itemBuilder: (_, index) => OrderListPage(index: index),
                 ),
               ),
             ),
           ],
-      ),
+        ),
       ),
     );
   }
@@ -138,7 +141,7 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
           pinned: true, // 固定在顶部
           flexibleSpace: MyFlexibleSpaceBar(
             background: isDark ? Container(height: 113.0, color: Colours.dark_bg_color,) : LoadAssetImage('order/order_bg',
-              width: Screen.width(context),
+              width: context.width,
               height: 113.0,
               fit: BoxFit.fill,
             ),
@@ -152,56 +155,55 @@ class _OrderPageState extends State<OrderPage> with AutomaticKeepAliveClientMixi
       SliverPersistentHeader(
         pinned: true,
         delegate: SliverAppBarDelegate(
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color: isDark ? Colours.dark_bg_color : null,
-                image: isDark ? null : DecorationImage(
-                  image: ImageUtils.getAssetImage('order/order_bg1'),
-                  fit: BoxFit.fill
-                )
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: isDark ? Colours.dark_bg_color : null,
+              image: isDark ? null : DecorationImage(
+                image: ImageUtils.getAssetImage('order/order_bg1'),
+                fit: BoxFit.fill,
               ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: MyCard(
-                  child: Container(
-                    height: 80.0,
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: TabBar(
-                      labelPadding: const EdgeInsets.symmetric(horizontal: 0),
-                      controller: _tabController,
-                      labelColor: ThemeUtils.isDark(context) ? Colours.dark_text : Colours.text,
-                      unselectedLabelColor: ThemeUtils.isDark(context) ? Colours.dark_text_gray : Colours.text,
-                      labelStyle: TextStyles.textBold14,
-                      unselectedLabelStyle: const TextStyle(
-                        fontSize: Dimens.font_sp14,
-                      ),
-                      indicatorColor: Colors.transparent,
-                      tabs: const <Widget>[
-                        _TabView(0, '新订单'),
-                        _TabView(1, '待配送'),
-                        _TabView(2, '待完成'),
-                        _TabView(3, '已完成'),
-                        _TabView(4, '已取消'),
-                      ],
-                      onTap: (index) {
-                        if (!mounted) {
-                          return;
-                        }
-                        _pageController.jumpToPage(index);
-                      },
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: MyCard(
+                child: Container(
+                  height: 80.0,
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: TabBar(
+                    labelPadding: const EdgeInsets.symmetric(horizontal: 0),
+                    controller: _tabController,
+                    labelColor: context.isDark ? Colours.dark_text : Colours.text,
+                    unselectedLabelColor: context.isDark ? Colours.dark_text_gray : Colours.text,
+                    labelStyle: TextStyles.textBold14,
+                    unselectedLabelStyle: const TextStyle(
+                      fontSize: Dimens.font_sp14,
                     ),
+                    indicatorColor: Colors.transparent,
+                    tabs: const <Widget>[
+                      _TabView(0, '新订单'),
+                      _TabView(1, '待配送'),
+                      _TabView(2, '待完成'),
+                      _TabView(3, '已完成'),
+                      _TabView(4, '已取消'),
+                    ],
+                    onTap: (index) {
+                      if (!mounted) {
+                        return;
+                      }
+                      _pageController.jumpToPage(index);
+                    },
                   ),
                 ),
               ),
-            )
-            , 80.0
+            ),
+          ), 80.0,
         ),
       ),
     ];
   }
 
   final PageController _pageController = PageController(initialPage: 0);
-  void _onPageChange(int index) async {
+  Future<void> _onPageChange(int index) async {
     provider.setIndex(index);
     /// 这里没有指示器，所以缩短过渡动画时间，减少不必要的刷新
     _tabController.animateTo(index, duration: const Duration(milliseconds: 0));
@@ -233,7 +235,7 @@ class _TabView extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    final List<List<String>> imgList = ThemeUtils.isDark(context) ? darkImg : img;
+    final List<List<String>> imgList = context.isDark ? darkImg : img;
     return Stack(
       children: <Widget>[
         Container(
@@ -247,7 +249,7 @@ class _TabView extends StatelessWidget {
               imgList[index][0] : 
               imgList[index][1], width: 24.0, height: 24.0,),
               Gaps.vGap4,
-              Text(text)
+              Text(text),
             ],
           ),
         ),
@@ -258,8 +260,8 @@ class _TabView extends StatelessWidget {
               color: Theme.of(context).errorColor,
               borderRadius: BorderRadius.circular(11.0),
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5.5, vertical: 2.0),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5.5, vertical: 2.0),
               child: Text('10', style: TextStyle(color: Colors.white, fontSize: Dimens.font_sp12),),
             ),
           ) : Gaps.empty,
@@ -270,9 +272,11 @@ class _TabView extends StatelessWidget {
 }
 
 class SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+
+  SliverAppBarDelegate(this.widget, this.height);
+
   final Widget widget;
   final double height;
-  SliverAppBarDelegate(this.widget, this.height);
 
   // minHeight 和 maxHeight 的值设置为相同时，header就不会收缩了
   @override

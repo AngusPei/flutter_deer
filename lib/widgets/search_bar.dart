@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
+import 'package:flutter_deer/widgets/my_button.dart';
 
 import 'load_image.dart';
 
@@ -42,10 +43,10 @@ class _SearchBarState extends State<SearchBar> {
   
   @override
   Widget build(BuildContext context) {
-    final bool isDark = ThemeUtils.isDark(context);
+    final bool isDark = context.isDark;
     final Color iconColor = isDark ? Colours.dark_text_gray : Colours.text_gray_c;
     
-    Widget back = Semantics(
+    final Widget back = Semantics(
       label: '返回',
       child: SizedBox(
         width: 48.0,
@@ -67,8 +68,35 @@ class _SearchBarState extends State<SearchBar> {
         ),
       ),
     );
-    
-    Widget textField = Expanded(
+
+    /// 使用2.0.0新增CupertinoSearchTextField 实现， 需添加依赖 cupertino_icons: ^1.0.2
+    // final Widget textField1 = Expanded(child: Container(
+    //     height: 32.0,
+    //     child: CupertinoSearchTextField(
+    //       key: const Key('search_text_field'),
+    //       controller: _controller,
+    //       focusNode: _focus,
+    //       placeholder: widget.hintText,
+    //       placeholderStyle: Theme.of(context).inputDecorationTheme.hintStyle,
+    //       padding: const EdgeInsetsDirectional.fromSTEB(3.8, 0, 5, 0),
+    //       prefixInsets: const EdgeInsetsDirectional.fromSTEB(8, 0, 0, 0),
+    //       suffixInsets: const EdgeInsetsDirectional.fromSTEB(0, 0, 8, 0),
+    //       style: Theme.of(context).textTheme.subtitle1,
+    //       itemSize: 16.0,
+    //       itemColor: iconColor,
+    //       decoration: BoxDecoration(
+    //         color: isDark ? Colours.dark_material_bg : Colours.bg_gray,
+    //         borderRadius: BorderRadius.circular(4.0),
+    //       ),
+    //       onSubmitted: (String val) {
+    //         _focus.unfocus();
+    //         // 点击软键盘的动作按钮时的回调
+    //         widget.onPressed(val);
+    //       },
+    //     )
+    // ));
+
+    final Widget textField = Expanded(
       child: Container(
         height: 32.0,
         decoration: BoxDecoration(
@@ -82,7 +110,7 @@ class _SearchBarState extends State<SearchBar> {
           focusNode: _focus,
           maxLines: 1,
           textInputAction: TextInputAction.search,
-          onSubmitted: (val) {
+          onSubmitted: (String val) {
             _focus.unfocus();
             // 点击软键盘的动作按钮时的回调
             widget.onPressed(val);
@@ -115,44 +143,32 @@ class _SearchBarState extends State<SearchBar> {
       ),
     );
     
-    Widget search = Theme(
-      data: Theme.of(context).copyWith(
-        buttonTheme: ButtonThemeData(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          height: 32.0,
-          minWidth: 44.0,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap, // 距顶部距离为0
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4.0),
-          ),
-        ),
-      ),
-      child: FlatButton(
-        textColor: isDark ?  Colours.dark_button_text : Colors.white,
-        color: isDark ?  Colours.dark_app_main : Colours.app_main,
-        onPressed:() {
-          _focus.unfocus();
-          widget.onPressed(_controller.text);
-        },
-        child: Text('搜索', style: TextStyle(fontSize: Dimens.font_sp14)),
-      ),
+    final Widget search = MyButton(
+      minHeight: 32.0,
+      minWidth: 44.0,
+      fontSize: Dimens.font_sp14,
+      radius: 4.0,
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      text: '搜索',
+      onPressed:() {
+        _focus.unfocus();
+        widget.onPressed(_controller.text);
+      },
     );
     
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
       child: Material(
-        color: ThemeUtils.getBackgroundColor(context),
+        color: context.backgroundColor,
         child: SafeArea(
-          child: Container(
-            child: Row(
-              children: <Widget>[
-                back,
-                textField,
-                Gaps.hGap8,
-                search,
-                Gaps.hGap16,
-              ],
-            ),
+          child: Row(
+            children: <Widget>[
+              back,
+              textField,
+              Gaps.hGap8,
+              search,
+              Gaps.hGap16,
+            ],
           ),
         ),
       ),

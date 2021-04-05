@@ -2,22 +2,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
-import 'package:flutter_deer/util/number_text_input_formatter.dart';
+import 'package:flutter_deer/util/input_formatter/number_text_input_formatter.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
-import 'package:flutter_deer/util/toast.dart';
+import 'package:flutter_deer/util/toast_utils.dart';
 import 'package:flutter_deer/widgets/base_dialog.dart';
 
 
 /// design/7店铺-店铺配置/index.html#artboard3
 class PriceInputDialog extends StatefulWidget {
 
-  PriceInputDialog({
+  const PriceInputDialog({
     Key key,
     this.title,
+    this.inputMaxPrice = 100000,
     this.onPressed,
   }) : super(key : key);
 
   final String title;
+  final double inputMaxPrice;
   final Function(String) onPressed;
   
   @override
@@ -53,9 +55,9 @@ class _PriceInputDialog extends State<PriceInputDialog> {
           controller: _controller,
           maxLines: 1,
           //style: TextStyles.textDark14,
-          keyboardType: TextInputType.numberWithOptions(decimal: true),
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
           // 金额限制数字格式
-          inputFormatters: [UsNumberTextInputFormatter()],
+          inputFormatters: [UsNumberTextInputFormatter(max: widget.inputMaxPrice)],
           decoration: InputDecoration(
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),

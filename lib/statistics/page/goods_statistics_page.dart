@@ -3,11 +3,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/res/resources.dart';
-import 'package:flutter_deer/statistics/widgets/selected_text.dart';
-import 'package:flutter_deer/util/date_utils.dart';
+import 'package:flutter_deer/statistics/widgets/selected_date.dart';
+import 'package:flutter_deer/util/date_utils.dart' as date;
 import 'package:flutter_deer/util/image_utils.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
-import 'package:flutter_deer/widgets/app_bar.dart';
+import 'package:flutter_deer/widgets/my_app_bar.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
 import 'package:flutter_deer/widgets/my_card.dart';
 import 'package:flutter_deer/widgets/pie_chart/pie_chart.dart';
@@ -15,6 +15,8 @@ import 'package:flutter_deer/widgets/pie_chart/pie_data.dart';
 
 /// design/5统计/index.html#artboard11
 class GoodsStatisticsPage extends StatefulWidget {
+
+  const GoodsStatisticsPage({Key key}) : super(key: key);
 
   @override
   _GoodsStatisticsPageState createState() => _GoodsStatisticsPageState();
@@ -35,7 +37,7 @@ class _GoodsStatisticsPageState extends State<GoodsStatisticsPage> {
 
   @override
   Widget build(BuildContext context) {
-    var time = Row(
+    final Widget time = Row(
       children: <Widget>[
         _buildSelectedText(_initialDay.year.toString(), 0),
         Gaps.hGap12,
@@ -45,7 +47,7 @@ class _GoodsStatisticsPageState extends State<GoodsStatisticsPage> {
         Gaps.hGap12,
         Gaps.vLine,
         Gaps.hGap12,
-        _buildSelectedText(_type ? '${DateUtils.previousWeek(_initialDay)} -${DateUtils.apiDayFormat(_initialDay)}' : '${_initialDay.day.toString()}日', 2),
+        _buildSelectedText(_type ? '${date.DateUtils.previousWeekToString(_initialDay)} -${date.DateUtils.apiDayFormat2(_initialDay)}' : '${_initialDay.day.toString()}日', 2),
       ],
     );
     
@@ -136,8 +138,8 @@ class _GoodsStatisticsPageState extends State<GoodsStatisticsPage> {
   }
 
   Widget _buildItem(int index) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8.0),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
       child: MyCard(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(8.0, 16.0, 16.0, 16.0),
@@ -145,17 +147,19 @@ class _GoodsStatisticsPageState extends State<GoodsStatisticsPage> {
             children: <Widget>[
               if (index <= 2) LoadAssetImage('statistic/${index == 0 ? 'champion' : index == 1 ? 'runnerup' : 'thirdplace'}', width: 40.0,) else Container(
                 alignment: Alignment.center,
-                width: 18.0, height: 18.0,
+                width: 18.0,
+                height: 18.0,
                 margin: const EdgeInsets.symmetric(horizontal: 11.0),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: PieChart.colorList[index]
                 ),
-                child: Text('${index + 1}', style: TextStyle(color: Colors.white, fontSize: Dimens.font_sp12, fontWeight: FontWeight.bold)),
+                child: Text('${index + 1}', style: const TextStyle(color: Colors.white, fontSize: Dimens.font_sp12, fontWeight: FontWeight.bold)),
               ),
               Gaps.hGap4,
               Container(
-                height: 36.0, width: 36.0,
+                height: 36.0,
+                width: 36.0,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(4.0),
                   border: Border.all(color: const Color(0xFFF7F8FA), width: 0.6),
@@ -171,7 +175,7 @@ class _GoodsStatisticsPageState extends State<GoodsStatisticsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text('那鲁火多饮料', maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold, fontSize: Dimens.font_sp12)),
+                    const Text('那鲁火多饮料', maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.bold, fontSize: Dimens.font_sp12)),
                     Text('250ml', style: Theme.of(context).textTheme.subtitle2),
                   ],
                 ),
@@ -205,8 +209,8 @@ class _GoodsStatisticsPageState extends State<GoodsStatisticsPage> {
   }
 
   Widget _buildSelectedText(String text, int index) {
-    final Color unSelectedTextColor = ThemeUtils.isDark(context) ? Colors.white : Colours.dark_text_gray;
-    return SelectedDate(
+    final Color unSelectedTextColor = context.isDark ? Colors.white : Colours.dark_text_gray;
+    return SelectedDateButton(
       text,
       fontSize: Dimens.font_sp15,
       selected: _type && _selectedIndex == index,

@@ -5,19 +5,28 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
-import 'package:flutter_deer/widgets/app_bar.dart';
+import 'package:flutter_deer/util/device_utils.dart';
+import 'package:flutter_deer/util/other_utils.dart';
+import 'package:flutter_deer/widgets/my_app_bar.dart';
 import 'package:flutter_deer/widgets/click_item.dart';
 
 class AboutPage extends StatefulWidget {
+
+  const AboutPage({Key key}) : super(key: key);
+
   @override
   _AboutPageState createState() => _AboutPageState();
 }
 
 class _AboutPageState extends State<AboutPage> {
 
-  final _styles = [FlutterLogoStyle.stacked, FlutterLogoStyle.markOnly, FlutterLogoStyle.horizontal];
-  final _colors = [Colors.red, Colors.green, Colors.brown, Colors.blue, Colors.purple, Colors.pink, Colors.amber];
-  final _curves = [
+  final List<FlutterLogoStyle> _styles = <FlutterLogoStyle>[
+    FlutterLogoStyle.stacked,
+    FlutterLogoStyle.markOnly,
+    FlutterLogoStyle.horizontal
+  ];
+
+  final List<Cubic> _curves = <Cubic>[
     Curves.ease, Curves.easeIn, Curves.easeInOutCubic, Curves.easeInOut,
     Curves.easeInQuad, Curves.easeInCirc, Curves.easeInBack, Curves.easeInOutExpo,
     Curves.easeInToLinear, Curves.easeOutExpo, Curves.easeInOutSine, Curves.easeOutSine,
@@ -25,9 +34,9 @@ class _AboutPageState extends State<AboutPage> {
   
   // 取随机颜色
   Color _randomColor() {
-    var red = Random.secure().nextInt(255);
-    var greed = Random.secure().nextInt(255);
-    var blue = Random.secure().nextInt(255);
+    final int red = Random.secure().nextInt(255);
+    final int greed = Random.secure().nextInt(255);
+    final int blue = Random.secure().nextInt(255);
     return Color.fromARGB(255, red, greed, blue);
   }
 
@@ -38,7 +47,7 @@ class _AboutPageState extends State<AboutPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // 2s定时器
-      _countdownTimer = Timer.periodic(Duration(seconds: 2), (timer) {
+      _countdownTimer = Timer.periodic(const Duration(seconds: 2), (_) {
         // https://www.jianshu.com/p/e4106b829bff
         if (!mounted) {
           return;
@@ -68,7 +77,6 @@ class _AboutPageState extends State<AboutPage> {
           Gaps.vGap50,
           FlutterLogo(
             size: 100.0,
-            colors: _colors[Random.secure().nextInt(7)],
             textColor: _randomColor(),
             style: _styles[Random.secure().nextInt(3)],
             curve: _curves[Random.secure().nextInt(12)],
@@ -77,14 +85,22 @@ class _AboutPageState extends State<AboutPage> {
           ClickItem(
             title: 'Github',
             content: 'Go Star',
-            onTap: () => NavigatorUtils.goWebViewPage(context, 'Flutter Deer', 'https://github.com/simplezhli/flutter_deer')
+            onTap: () => _launchWebURL('Flutter Deer', 'https://github.com/simplezhli/flutter_deer')
           ),
           ClickItem(
-            title: '作者',
-            onTap: () => NavigatorUtils.goWebViewPage(context, '作者博客', 'https://weilu.blog.csdn.net')
+            title: '作者博客',
+            onTap: () => _launchWebURL('作者博客', 'https://weilu.blog.csdn.net')
           ),
         ],
       ),
     );
+  }
+
+  void _launchWebURL(String title, String url) {
+    if (Device.isMobile) {
+      NavigatorUtils.goWebViewPage(context, title, url);
+    } else {
+      Utils.launchWebURL(url);
+    }
   }
 }

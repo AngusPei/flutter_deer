@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
-import 'package:flutter_deer/util/utils.dart';
-import 'package:flutter_deer/widgets/app_bar.dart';
+import 'package:flutter_deer/util/other_utils.dart';
+import 'package:flutter_deer/widgets/my_app_bar.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
+import 'package:flutter_deer/widgets/my_button.dart';
 import 'package:flutter_deer/widgets/my_scroll_view.dart';
 
 import '../order_router.dart';
@@ -14,6 +15,9 @@ import '../order_router.dart';
 
 /// design/3订单/index.html#artboard10
 class OrderInfoPage extends StatefulWidget {
+
+  const OrderInfoPage({Key key}) : super(key: key);
+
   @override
   _OrderInfoPageState createState() => _OrderInfoPageState();
 }
@@ -23,10 +27,9 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
   @override
   Widget build(BuildContext context) {
     final Color red = Theme.of(context).errorColor;
-    final Color blue = Theme.of(context).primaryColor;
-    final bool isDark = ThemeUtils.isDark(context);
+    final bool isDark = context.isDark;
 
-    Widget bottomMenu = Container(
+    final Widget bottomMenu = Container(
       height: 60.0,
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Theme(
@@ -40,26 +43,20 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
           children: <Widget>[
             Expanded(
               flex: 1,
-              child: FlatButton(
-                color: isDark ? Colours.dark_material_bg : const Color(0xFFE1EAFA),
+              child: MyButton(
+                backgroundColor: isDark ? Colours.dark_material_bg : const Color(0xFFE1EAFA),
                 textColor: isDark ? Colours.dark_text : Colours.app_main,
-                child: const Text(
-                  '拒单',
-                  style: TextStyle(fontSize: Dimens.font_sp18),
-                ),
+                text: '拒单',
+                minHeight: 45,
                 onPressed: () {},
               ),
             ),
             Gaps.hGap16,
             Expanded(
               flex: 1,
-              child: FlatButton(
-                color: blue,
-                textColor: isDark ? Colours.dark_button_text : Colors.white,
-                child: const Text(
-                  '接单',
-                  style: TextStyle(fontSize: Dimens.font_sp18),
-                ),
+              child: MyButton(
+                text: '接单',
+                minHeight: 45,
                 onPressed: () {},
               ),
             )
@@ -68,7 +65,7 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
       ),
     );
 
-    List<Widget> children = [
+    final List<Widget> children = [
       const Text(
         '暂未接单',
         style: TextStyles.textBold24,
@@ -90,10 +87,10 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
             child: MergeSemantics(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  const Text('郭李'),
+                children: const <Widget>[
+                  Text('郭李'),
                   Gaps.vGap8,
-                  const Text('15000000000'),
+                  Text('15000000000'),
                 ],
               ),
             ),
@@ -115,10 +112,10 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
       Gaps.vGap10,
       Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          const LoadAssetImage('order/icon_address', width: 16.0, height: 20.0),
+        children: const <Widget>[
+          LoadAssetImage('order/icon_address', width: 16.0, height: 20.0),
           Gaps.hGap4,
-          const Expanded(child: Text('西安市雁塔区 鱼化寨街道唐兴路唐兴数码3楼318', maxLines: 2)),
+          Expanded(child: Text('西安市雁塔区 鱼化寨街道唐兴路唐兴数码3楼318', maxLines: 2)),
         ],
       ),
       Gaps.vGap32,
@@ -132,18 +129,18 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
         // 禁用ListView滑动，使用外层的ScrollView滑动
         physics: const NeverScrollableScrollPhysics(),
         itemCount: 2,
-        itemBuilder: (_, index) => _getOrderGoodsItem(index),
+        itemBuilder: (_, index) => _buildOrderGoodsItem(index),
       ),
       Gaps.vGap8,
-      _getGoodsInfoItem('共2件商品', Utils.formatPrice('50.00')),
-      _getGoodsInfoItem('配送费', Utils.formatPrice('5.00')),
-      _getGoodsInfoItem('立减', Utils.formatPrice('-2.50'), contentTextColor: red),
-      _getGoodsInfoItem('优惠券', Utils.formatPrice('-2.50'), contentTextColor: red),
-      _getGoodsInfoItem('社区币抵扣', Utils.formatPrice('-2.50'), contentTextColor: red),
-      _getGoodsInfoItem('佣金', Utils.formatPrice('-1.0'), contentTextColor: red),
+      _buildGoodsInfoItem('共2件商品', Utils.formatPrice('50.00')),
+      _buildGoodsInfoItem('配送费', Utils.formatPrice('5.00')),
+      _buildGoodsInfoItem('立减', Utils.formatPrice('-2.50'), contentTextColor: red),
+      _buildGoodsInfoItem('优惠券', Utils.formatPrice('-2.50'), contentTextColor: red),
+      _buildGoodsInfoItem('金币抵扣', Utils.formatPrice('-2.50'), contentTextColor: red),
+      _buildGoodsInfoItem('佣金', Utils.formatPrice('-1.0'), contentTextColor: red),
       Gaps.line,
       Gaps.vGap8,
-      _getGoodsInfoItem('合计', Utils.formatPrice('46.50')),
+      _buildGoodsInfoItem('合计', Utils.formatPrice('46.50')),
       Gaps.vGap8,
       Gaps.line,
       Gaps.vGap32,
@@ -152,11 +149,11 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
         style: TextStyles.textBold18,
       ),
       Gaps.vGap12,
-      _getOrderInfoItem('订单编号:', '1256324856942'),
-      _getOrderInfoItem('下单时间:', '2018/08/26 12:20'),
-      _getOrderInfoItem('支付方式:', '在线支付/支付宝'),
-      _getOrderInfoItem('配送方式:', '送货上门'),
-      _getOrderInfoItem('客户备注:', '无'),
+      _buildOrderInfoItem('订单编号:', '1256324856942'),
+      _buildOrderInfoItem('下单时间:', '2021/08/26 12:20'),
+      _buildOrderInfoItem('支付方式:', '在线支付/支付宝'),
+      _buildOrderInfoItem('配送方式:', '送货上门'),
+      _buildOrderInfoItem('客户备注:', '无'),
     ];
 
     return Scaffold(
@@ -175,7 +172,7 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
     );
   }
 
-  Widget _getOrderInfoItem(String title, String content) {
+  Widget _buildOrderInfoItem(String title, String content) {
     return MergeSemantics(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -190,13 +187,13 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
     );
   }
 
-  Widget _getOrderGoodsItem(int index) {
-    var item = Row(
+  Widget _buildOrderGoodsItem(int index) {
+    final Widget item = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Container(
-          child: const LoadAssetImage('order/icon_goods', width: 56.0, height: 56.0),
-          margin: const EdgeInsets.only(top: 5.0),
+        const Padding(
+          child: LoadAssetImage('order/icon_goods', width: 56.0, height: 56.0),
+          padding: EdgeInsets.only(top: 5.0),
         ),
         Gaps.hGap8,
         Expanded(
@@ -204,44 +201,20 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                index % 2 == 0 ? '泊泉雅花瓣·浪漫亲肤玫瑰沐浴乳' : '日本纳鲁火多橙饮',
+                index.isEven ? '泊泉雅花瓣·浪漫亲肤玫瑰沐浴乳' : '日本纳鲁火多橙饮',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
               Gaps.vGap4,
-              Text(index % 2 == 0 ? '玫瑰香 520ml' : '125ml', style: Theme.of(context).textTheme.subtitle2),
+              Text(index.isEven ? '玫瑰香 520ml' : '125ml', style: Theme.of(context).textTheme.subtitle2),
               Gaps.vGap8,
               Row(
                 children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).errorColor,
-                      borderRadius: BorderRadius.circular(2.0),
-                    ),
-                    height: 16.0,
-                    alignment: Alignment.center,
-                    child: Text(
-                      '立减2.50元',
-                      style: const TextStyle(color: Colors.white, fontSize: Dimens.font_sp10,),
-                    ),
-                  ),
+                  _buildGoodsTag(Theme.of(context).errorColor, '立减2.50元'),
                   Gaps.hGap4,
                   Offstage(
                     offstage: index % 2 != 0,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(2.0),
-                      ),
-                      height: 16.0,
-                      alignment: Alignment.center,
-                      child: const Text(
-                        '抵扣2.50元',
-                        style: TextStyle(color: Colors.white, fontSize: Dimens.font_sp10),
-                      ),
-                    ),
+                    child: _buildGoodsTag(Theme.of(context).primaryColor, '抵扣2.50元'),
                   )
                 ],
               )
@@ -249,7 +222,7 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
           ),
         ),
         Gaps.hGap8,
-        Text('x1', style: TextStyles.textSize12),
+        const Text('x1', style: TextStyles.textSize12),
         Gaps.hGap32,
         Text(Utils.formatPrice('25'), style: TextStyles.textBold14),
       ],
@@ -257,9 +230,9 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-          border: Border(
-            bottom: Divider.createBorderSide(context, width: 0.8),
-          )
+        border: Border(
+          bottom: Divider.createBorderSide(context, width: 0.8),
+        ),
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -267,8 +240,24 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
       ),
     );
   }
+
+  Widget _buildGoodsTag(Color color, String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(2.0),
+      ),
+      height: 16.0,
+      alignment: Alignment.center,
+      child: Text(
+        text,
+        style: const TextStyle(color: Colors.white, fontSize: Dimens.font_sp10, height: 1.1,),
+      ),
+    );
+  }
   
-  Widget _getGoodsInfoItem(String title, String content, {Color contentTextColor}) {
+  Widget _buildGoodsInfoItem(String title, String content, {Color contentTextColor}) {
     return MergeSemantics(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -288,27 +277,31 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
 
   void _showCallPhoneDialog(String phone) {
     showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('提示'),
-            content: Text('是否拨打：$phone ?'),
-            actions: <Widget>[
-              FlatButton(
-                onPressed: () => NavigatorUtils.goBack(context),
-                child: const Text('取消'),
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('提示'),
+          content: Text('是否拨打：$phone ?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => NavigatorUtils.goBack(context),
+              child: const Text('取消'),
+            ),
+            TextButton(
+              onPressed: () {
+                Utils.launchTelURL(phone);
+                NavigatorUtils.goBack(context);
+              },
+              style: ButtonStyle(
+                // 按下高亮颜色
+                overlayColor: MaterialStateProperty.all<Color>(Theme.of(context).errorColor.withOpacity(0.2)),
               ),
-              FlatButton(
-                onPressed: () {
-                  Utils.launchTelURL(phone);
-                  NavigatorUtils.goBack(context);
-                },
-                textColor: Theme.of(context).errorColor,
-                child: const Text('拨打'),
-              ),
-            ],
-          );
-        });
+              child: Text('拨打', style: TextStyle(color: Theme.of(context).errorColor),),
+            ),
+          ],
+        );
+      }
+    );
   }
 }

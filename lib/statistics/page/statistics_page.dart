@@ -14,6 +14,9 @@ import 'package:flutter_deer/widgets/my_flexible_space_bar.dart';
 
 /// design/5统计/index.html
 class StatisticsPage extends StatefulWidget {
+
+  const StatisticsPage({Key key}) : super(key: key);
+
   @override
   _StatisticsPageState createState() => _StatisticsPageState();
 }
@@ -34,7 +37,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
   bool isDark = false;
   
   List<Widget> _sliverBuilder() {
-    isDark = ThemeUtils.isDark(context);
+    isDark = context.isDark;
     return <Widget>[
       SliverAppBar(
         brightness: Brightness.dark,
@@ -46,7 +49,7 @@ class _StatisticsPageState extends State<StatisticsPage> {
         pinned: true,
         flexibleSpace: MyFlexibleSpaceBar(
           background: isDark ? Container(height: 115.0, color: Colours.dark_bg_color,) : LoadAssetImage('statistic/statistic_bg',
-            width: Screen.width(context),
+            width: context.width,
             height: 115.0,
             fit: BoxFit.fill,
           ),
@@ -90,15 +93,15 @@ class _StatisticsPageState extends State<StatisticsPage> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+            children: const <Widget>[
               Gaps.vGap32,
-              const Text('数据走势', style: TextStyles.textBold18),
+              Text('数据走势', style: TextStyles.textBold18),
               Gaps.vGap16,
-              const _StatisticsItem('订单统计', 'sjzs', 1),
+              _StatisticsItem('订单统计', 'sjzs', 1),
               Gaps.vGap8,
-              const _StatisticsItem('交易额统计', 'jyetj', 2),
+              _StatisticsItem('交易额统计', 'jyetj', 2),
               Gaps.vGap8,
-              const _StatisticsItem('商品统计', 'sptj', 3),
+              _StatisticsItem('商品统计', 'sptj', 3),
             ],
           ),
         ),

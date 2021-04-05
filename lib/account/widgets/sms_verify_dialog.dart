@@ -6,14 +6,19 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
+import 'package:flutter_deer/util/device_utils.dart';
 import 'package:flutter_deer/util/screen_utils.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
-import 'package:flutter_deer/util/toast.dart';
+import 'package:flutter_deer/util/toast_utils.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
+import 'package:flutter_deer/widgets/my_button.dart';
 
 /// design/6店铺-账户/index.html#artboard23
 /// 骚操作：借腹生子
 class SMSVerifyDialog extends StatefulWidget {
+
+  const SMSVerifyDialog({Key key}) : super(key: key);
+
   @override
   _SMSVerifyDialogState createState() => _SMSVerifyDialogState();
 }
@@ -29,7 +34,7 @@ class _SMSVerifyDialogState extends State<SMSVerifyDialog> {
 
   final FocusNode _focusNode = FocusNode();
   final TextEditingController _controller = TextEditingController();
-  List<String> _codeList = ['', '', '', '', '', ''];
+  final List<String> _codeList = ['', '', '', '', '', ''];
   
   @override
   void initState() {
@@ -58,7 +63,7 @@ class _SMSVerifyDialogState extends State<SMSVerifyDialog> {
   Widget build(BuildContext context) {
     final Color textColor = Theme.of(context).primaryColor;
     
-    Widget child = Column(
+    final Widget child = Column(
       children: <Widget>[
         Stack(
           children: <Widget>[
@@ -103,13 +108,13 @@ class _SMSVerifyDialogState extends State<SMSVerifyDialog> {
                 /// 指定键盘外观，仅iOS有效
                 keyboardAppearance: Brightness.dark,
                 /// 只能为数字、6位
-                inputFormatters: [WhitelistingTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(6)],
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(6)],
                 // 隐藏光标与字体颜色，达到隐藏输入框的目的
                 cursorColor: Colors.transparent,
                 cursorWidth: 0,
                 textAlign: TextAlign.center,
                 backgroundCursorColor: Colors.transparent,
-                style: TextStyle(color: Colors.transparent, fontSize: Dimens.font_sp18),
+                style: const TextStyle(color: Colors.transparent, fontSize: Dimens.font_sp18),
                 onChanged: (v) {
                   for (var i = 0; i < _codeList.length; i ++) {
                     if (i < v.length) {
@@ -160,47 +165,58 @@ class _SMSVerifyDialogState extends State<SMSVerifyDialog> {
         ),
         Gaps.vGap16,
         Gaps.line,
-        Container(
-          width: double.infinity,
-          height: 48.0,
-          child: FlatButton(
-            child: Text(_clickable ? '获取验证码' : '已发送($_currentSecond s)', style: TextStyle(fontSize: Dimens.font_sp18)),
-            textColor: textColor,
-            disabledTextColor: Colours.text_gray,
-            onPressed: _clickable ? () {
+        MyButton(
+          text: _clickable ? '获取验证码' : '已发送($_currentSecond s)',
+          textColor: textColor,
+          disabledTextColor: Colours.text_gray,
+          backgroundColor: Colors.transparent,
+          disabledBackgroundColor: Colors.transparent,
+          onPressed: _clickable ? () {
+            setState(() {
+              _currentSecond = _second;
+              _clickable = false;
+            });
+            _subscription = Stream.periodic(const Duration(seconds: 1), (i) => i).take(_second).listen((i) {
               setState(() {
-                _currentSecond = _second;
-                _clickable = false;
+                _currentSecond = _second - i - 1;
+                _clickable = _currentSecond < 1;
               });
-              _subscription = Stream.periodic(Duration(seconds: 1), (i) => i).take(_second).listen((i) {
-                setState(() {
-                  _currentSecond = _second - i - 1;
-                  _clickable = _currentSecond < 1;
-                });
-              });
-            }: null,
-          ),
-        )
+            });
+          }: null,
+        ),
       ],
     );
-    
-    return Scaffold(//创建透明层
-      backgroundColor: Colors.transparent,//透明类型
-      body: AnimatedContainer(
+
+    Widget body = Container(
+      decoration: BoxDecoration(
+        color: context.dialogBackgroundColor,
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      width: 280.0,
+      height: 210.0,
+      child: child,
+    );
+
+    /// 判断原因见BaseDialog注释
+    if (Device.getAndroidSdkInt() >= 30) {
+      body = Container(
         alignment: Alignment.center,
-        height: Screen.height(context) - MediaQuery.of(context).viewInsets.bottom,
+        height: context.height - MediaQuery.of(context).viewInsets.bottom,
+        child: body,
+      );
+    } else {
+      body = AnimatedContainer(
+        alignment: Alignment.center,
+        height: context.height - MediaQuery.of(context).viewInsets.bottom,
         duration: const Duration(milliseconds: 120),
         curve: Curves.easeInCubic,
-        child: Container(
-          decoration: BoxDecoration(
-            color: ThemeUtils.getDialogBackgroundColor(context),
-            borderRadius: BorderRadius.circular((8.0)),
-          ),
-          width: 280.0,
-          height: 210.0,
-          child: child,
-        ),
-      ),
+        child: body,
+      );
+    }
+
+    return Scaffold(//创建透明层
+      backgroundColor: Colors.transparent,//透明类型
+      body: body,
     );
   }
 
@@ -213,7 +229,7 @@ class _SMSVerifyDialogState extends State<SMSVerifyDialog> {
           border: Border.all(width: 0.6, color: _codeList[p].isNotEmpty ? textColor : Colours.text_gray_c),
           borderRadius: BorderRadius.circular(4.0),
         ),
-        child: Text(_codeList[p], style: TextStyle(fontSize: Dimens.font_sp18),)
+        child: Text(_codeList[p], style: const TextStyle(fontSize: Dimens.font_sp18),)
     );
   }
 }

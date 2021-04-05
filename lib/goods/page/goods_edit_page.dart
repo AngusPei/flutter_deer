@@ -1,22 +1,19 @@
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/goods/provider/goods_sort_provider.dart';
-import 'package:flutter_deer/goods/widgets/goods_sort_dialog.dart';
+import 'package:flutter_deer/goods/widgets/goods_sort_bottom_sheet.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
+import 'package:flutter_deer/util/device_utils.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
-import 'package:flutter_deer/util/toast.dart';
-import 'package:flutter_deer/util/utils.dart';
+import 'package:flutter_deer/util/toast_utils.dart';
 import 'package:flutter_deer/widgets/click_item.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
 import 'package:flutter_deer/widgets/my_button.dart';
 import 'package:flutter_deer/widgets/my_scroll_view.dart';
 import 'package:flutter_deer/widgets/selected_image.dart';
 import 'package:flutter_deer/widgets/text_field_item.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter_deer/res/resources.dart';
-import 'package:flutter_deer/widgets/app_bar.dart';
+import 'package:flutter_deer/widgets/my_app_bar.dart';
 
 import '../goods_router.dart';
 
@@ -34,22 +31,9 @@ class GoodsEditPage extends StatefulWidget {
 
 class _GoodsEditPageState extends State<GoodsEditPage> {
 
-  File _imageFile;
   String _goodsSortName;
-  final ImagePicker picker = ImagePicker();
   final TextEditingController _codeController = TextEditingController();
 
-  Future<void> _getImage() async {
-    try {
-      PickedFile pickedFile = await picker.getImage(source: ImageSource.gallery, maxWidth: 800);
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
-    } catch (e) {
-      Toast.show('没有权限，无法打开相册！');
-    }
-  }
-  
   @override
   void initState() {
     super.initState();
@@ -59,11 +43,14 @@ class _GoodsEditPageState extends State<GoodsEditPage> {
       }
     });
   }
-  
-  void _scan() async {
-    var code = await Utils.scan();
-    if (code != null) {
-      _codeController.text = code;
+
+  void _scan() {
+    if (Device.isMobile) {
+      NavigatorUtils.pushResult(context, GoodsRouter.qrCodeScannerPage, (Object code) {
+        _codeController.text = code.toString();
+      });
+    } else {
+      Toast.show('当前平台暂不支持');
     }
   }
   
@@ -86,11 +73,9 @@ class _GoodsEditPageState extends State<GoodsEditPage> {
             ),
           ),
           Gaps.vGap16,
-          Center(
+          const Center(
             child: SelectedImage(
               size: 96.0,
-              image: _imageFile,
-              onTap: _getImage
             ),
           ),
           Gaps.vGap8,
@@ -101,15 +86,15 @@ class _GoodsEditPageState extends State<GoodsEditPage> {
             ),
           ),
           Gaps.vGap16,
-          TextFieldItem(
+          const TextFieldItem(
             title: '商品名称',
             hintText: '填写商品名称',
           ),
-          TextFieldItem(
+          const TextFieldItem(
             title: '商品简介',
             hintText: '填写简短描述',
           ),
-          TextFieldItem(
+          const TextFieldItem(
             title: '折后价格',
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             hintText: '填写商品单品折后价格',
@@ -128,8 +113,8 @@ class _GoodsEditPageState extends State<GoodsEditPage> {
                   label: '扫码',
                   child: GestureDetector(
                     child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: ThemeUtils.isDark(context) ?
+                      padding: const EdgeInsets.all(16.0),
+                      child: context.isDark ?
                         const LoadAssetImage('goods/icon_sm', width: 16.0, height: 16.0) :
                         const LoadAssetImage('goods/scanning', width: 16.0, height: 16.0),
                     ),
@@ -139,7 +124,7 @@ class _GoodsEditPageState extends State<GoodsEditPage> {
               )
             ],
           ),
-          TextFieldItem(
+          const TextFieldItem(
             title: '商品说明',
             hintText: '选填',
           ),
@@ -152,11 +137,11 @@ class _GoodsEditPageState extends State<GoodsEditPage> {
             ),
           ),
           Gaps.vGap16,
-          TextFieldItem(
+          const TextFieldItem(
             title: '立减金额',
             keyboardType: TextInputType.numberWithOptions(decimal: true)
           ),
-          TextFieldItem(
+          const TextFieldItem(
             title: '折扣金额',
             keyboardType: TextInputType.numberWithOptions(decimal: true)
           ),
@@ -207,7 +192,7 @@ class _GoodsEditPageState extends State<GoodsEditPage> {
       /// 使用true则高度不受16分之9的最高限制
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return GoodsSortDialog(
+        return GoodsSortBottomSheet(
           provider: _provider,
           onSelected: (_, name) {
             setState(() {

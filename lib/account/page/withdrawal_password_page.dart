@@ -1,16 +1,19 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/account/widgets/sms_verify_dialog.dart';
-import 'package:flutter_deer/account/widgets/withdrawal_password_setting_dialog.dart';
+import 'package:flutter_deer/account/widgets/withdrawal_password_setting.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
-import 'package:flutter_deer/util/utils.dart';
-import 'package:flutter_deer/widgets/app_bar.dart';
+import 'package:flutter_deer/util/other_utils.dart';
+import 'package:flutter_deer/widgets/my_app_bar.dart';
 import 'package:flutter_deer/widgets/base_dialog.dart';
 import 'package:flutter_deer/widgets/click_item.dart';
 
 /// design/6店铺-账户/index.html#artboard20
 class WithdrawalPasswordPage extends StatefulWidget {
+
+  const WithdrawalPasswordPage({Key key}) : super(key: key);
+
   @override
   _WithdrawalPasswordPageState createState() => _WithdrawalPasswordPageState();
 }
@@ -34,7 +37,7 @@ class _WithdrawalPasswordPageState extends State<WithdrawalPasswordPage> {
                 enableDrag: false,
                 /// 使用true则高度不受16分之9的最高限制
                 isScrollControlled: true,
-                builder: (_) => WithdrawalPasswordSettingDialog()
+                builder: (_) => const WithdrawalPasswordSetting()
               );
             }
           ),
@@ -49,21 +52,21 @@ class _WithdrawalPasswordPageState extends State<WithdrawalPasswordPage> {
 
   void _showHintDialog() {
     showElasticDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return BaseDialog(
-            hiddenTitle: true,
-            child: const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text('为了您的账户安全需先进行短信验证并设置提现密码。', textAlign: TextAlign.center),
-            ),
-            onPressed: () {
-              NavigatorUtils.goBack(context);
-              _showVerifyDialog();
-            },
-          );
-        }
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return BaseDialog(
+          hiddenTitle: true,
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text('为了您的账户安全需先进行短信验证并设置提现密码。', textAlign: TextAlign.center),
+          ),
+          onPressed: () {
+            NavigatorUtils.goBack(context);
+            _showVerifyDialog();
+          },
+        );
+      },
     );
   }
 
@@ -71,7 +74,7 @@ class _WithdrawalPasswordPageState extends State<WithdrawalPasswordPage> {
     showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => SMSVerifyDialog()
+      builder: (_) => const SMSVerifyDialog()
     );
   }
 }

@@ -1,6 +1,5 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/util/image_utils.dart';
 
@@ -13,8 +12,11 @@ class LoadImage extends StatelessWidget {
     this.height,
     this.fit = BoxFit.cover, 
     this.format = ImageFormat.png,
-    this.holderImg = 'none'
-  }): super(key: key);
+    this.holderImg = 'none',
+    this.cacheWidth,
+    this.cacheHeight,
+  }) : assert(image != null, 'The [image] argument must not be null.'),
+       super(key: key);
   
   final String image;
   final double width;
@@ -22,34 +24,33 @@ class LoadImage extends StatelessWidget {
   final BoxFit fit;
   final ImageFormat format;
   final String holderImg;
+  final int cacheWidth;
+  final int cacheHeight;
   
   @override
   Widget build(BuildContext context) {
-    if (TextUtil.isEmpty(image) || image == 'null') {
-      return LoadAssetImage(holderImg,
+
+    if (image.isEmpty || image.startsWith('http')) {
+      final Widget _image = LoadAssetImage(holderImg, height: height, width: width, fit: fit);
+      return CachedNetworkImage(
+        imageUrl: image,
+        placeholder: (_, __) => _image,
+        errorWidget: (_, __, dynamic error) => _image,
+        width: width,
+        height: height,
+        fit: fit,
+        memCacheWidth: cacheWidth,
+        memCacheHeight: cacheHeight,
+      );
+    } else {
+      return LoadAssetImage(image,
         height: height,
         width: width,
         fit: fit,
-        format: format
+        format: format,
+        cacheWidth: cacheWidth,
+        cacheHeight: cacheHeight,
       );
-    } else {
-      if (image.startsWith('http')) {
-        return CachedNetworkImage(
-          imageUrl: image,
-          placeholder: (_, __) => LoadAssetImage(holderImg, height: height, width: width, fit: fit),
-          errorWidget: (_, __, dynamic error) => LoadAssetImage(holderImg, height: height, width: width, fit: fit),
-          width: width,
-          height: height,
-          fit: fit,
-        );
-      } else {
-        return LoadAssetImage(image,
-          height: height,
-          width: width,
-          fit: fit,
-          format: format,
-        );
-      }
     }
   }
 }

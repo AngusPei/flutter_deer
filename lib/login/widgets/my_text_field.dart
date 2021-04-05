@@ -4,9 +4,10 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_deer/localization/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/deer_localizations.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
+import 'package:flutter_deer/widgets/my_button.dart';
 
 
 /// 登录模块的输入框封装
@@ -53,18 +54,18 @@ class _MyTextFieldState extends State<MyTextField> {
   @override
   void initState() {
     /// 获取初始化值
-    _isShowDelete = widget.controller.text.isEmpty;
+    _isShowDelete = widget.controller.text.isNotEmpty;
     /// 监听输入改变  
     widget.controller.addListener(isEmpty);
     super.initState();
   }
   
   void isEmpty() {
-    bool isEmpty = widget.controller.text.isEmpty;
+    final bool isNotEmpty = widget.controller.text.isNotEmpty;
     /// 状态不一样在刷新，避免重复不必要的setState
-    if (isEmpty != _isShowDelete) {
+    if (isNotEmpty != _isShowDelete) {
       setState(() {
-        _isShowDelete = isEmpty;
+        _isShowDelete = isNotEmpty;
       });
     }
   }
@@ -77,7 +78,7 @@ class _MyTextFieldState extends State<MyTextField> {
   }
 
   Future _getVCode() async {
-    bool isSuccess = await widget.getVCode();
+    final bool isSuccess = await widget.getVCode();
     if (isSuccess != null && isSuccess) {
       setState(() {
         _currentSecond = _second;
@@ -97,17 +98,17 @@ class _MyTextFieldState extends State<MyTextField> {
     final ThemeData themeData = Theme.of(context);
     final bool isDark = themeData.brightness == Brightness.dark;
 
-    final TextField textField = TextField(
+    Widget textField = TextField(
       focusNode: widget.focusNode,
       maxLength: widget.maxLength,
-      obscureText: widget.isInputPwd ? !_isShowPwd : false,
+      obscureText: widget.isInputPwd && !_isShowPwd,
       autofocus: widget.autoFocus,
       controller: widget.controller,
       textInputAction: TextInputAction.done,
       keyboardType: widget.keyboardType,
-      // 数字、手机号限制格式为0到9(白名单)， 密码限制不包含汉字（黑名单）
+      // 数字、手机号限制格式为0到9， 密码限制不包含汉字
       inputFormatters: (widget.keyboardType == TextInputType.number || widget.keyboardType == TextInputType.phone) ? 
-      [WhitelistingTextInputFormatter(RegExp('[0-9]'))] : [BlacklistingTextInputFormatter(RegExp('[\u4e00-\u9fa5]'))],
+      [FilteringTextInputFormatter.allow(RegExp('[0-9]'))] : [FilteringTextInputFormatter.deny(RegExp('[\u4e00-\u9fa5]'))],
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
         hintText: widget.hintText,
@@ -126,68 +127,73 @@ class _MyTextFieldState extends State<MyTextField> {
         ),
       ),
     );
-    
-    Widget clear = Semantics(
-      label: '清空',
-      hint: '清空输入框',
-      child: GestureDetector(
-        child: LoadAssetImage('login/qyg_shop_icon_delete',
-          key: Key('${widget.keyName}_delete'),
-          width: 18.0,
-          height: 40.0,
-        ),
-        onTap: () => widget.controller.text = '',
-      ),
+
+    /// 个别机型（华为、vivo）密码安全键盘不弹出问题，临时修复方法：https://github.com/flutter/flutter/issues/68571 (issues/61446)
+    textField = Listener(
+      onPointerDown: (e) => FocusScope.of(context).requestFocus(widget.focusNode),
+      child: textField,
     );
 
-    Widget pwdVisible = Semantics(
-      label: '密码可见开关',
-      hint: '密码是否可见',
-      child: GestureDetector(
-        child: LoadAssetImage(
-          _isShowPwd ? 'login/qyg_shop_icon_display' : 'login/qyg_shop_icon_hide',
-          key: Key('${widget.keyName}_showPwd'),
-          width: 18.0,
-          height: 40.0,
-        ),
-        onTap: () {
-          setState(() {
-            _isShowPwd = !_isShowPwd;
-          });
-        },
-      ),
-    );
+    Widget clearButton;
 
-    Widget getVCodeButton = Theme(
-      data: Theme.of(context).copyWith(
-        buttonTheme: const ButtonThemeData(
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
-          height: 26.0,
-          minWidth: 76.0,
-          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    if (_isShowDelete) {
+      clearButton = Semantics(
+        label: '清空',
+        hint: '清空输入框',
+        child: GestureDetector(
+          child: LoadAssetImage('login/qyg_shop_icon_delete',
+            key: Key('${widget.keyName}_delete'),
+            width: 18.0,
+            height: 40.0,
+          ),
+          onTap: () => widget.controller.text = '',
         ),
-      ),
-      child: FlatButton(
+      );
+    }
+
+    Widget pwdVisible;
+    if (widget.isInputPwd) {
+      pwdVisible = Semantics(
+        label: '密码可见开关',
+        hint: '密码是否可见',
+        child: GestureDetector(
+          child: LoadAssetImage(
+            _isShowPwd ? 'login/qyg_shop_icon_display' : 'login/qyg_shop_icon_hide',
+            key: Key('${widget.keyName}_showPwd'),
+            width: 18.0,
+            height: 40.0,
+          ),
+          onTap: () {
+            setState(() {
+              _isShowPwd = !_isShowPwd;
+            });
+          },
+        ),
+      );
+    }
+
+    Widget getVCodeButton;
+    if (widget.getVCode != null) {
+      getVCodeButton = MyButton(
         key: const Key('getVerificationCode'),
         onPressed: _clickable ? _getVCode : null,
+        fontSize: Dimens.font_sp12,
+        text: _clickable ? DeerLocalizations.of(context).getVerificationCode : '（$_currentSecond s）',
         textColor: themeData.primaryColor,
-        color: Colors.transparent,
         disabledTextColor: isDark ? Colours.dark_text : Colors.white,
-        disabledColor: isDark ? Colours.dark_text_gray : Colours.text_gray_c,
-        shape:RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(1.0),
-          side: BorderSide(
-            color: _clickable ? themeData.primaryColor : Colors.transparent,
-            width: 0.8,
-          ),
+        backgroundColor: Colors.transparent,
+        disabledBackgroundColor: isDark ? Colours.dark_text_gray : Colours.text_gray_c,
+        radius: 1.0,
+        minHeight: 26.0,
+        minWidth: 76.0,
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        side: BorderSide(
+          color: _clickable ? themeData.primaryColor : Colors.transparent,
+          width: 0.8,
         ),
-        child: Text(
-          _clickable ? AppLocalizations.of(context).getVerificationCode : '（$_currentSecond s）',
-          style: TextStyle(fontSize: Dimens.font_sp12),
-        ),
-      ),
-    );
-    
+      );
+    }
+
     return Stack(
       alignment: Alignment.centerRight,
       children: <Widget>[
@@ -195,11 +201,13 @@ class _MyTextFieldState extends State<MyTextField> {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            if (_isShowDelete) Gaps.empty else clear,
-            if (!widget.isInputPwd) Gaps.empty else Gaps.hGap15,
-            if (!widget.isInputPwd) Gaps.empty else pwdVisible,
-            if (widget.getVCode == null) Gaps.empty else Gaps.hGap15,
-            if (widget.getVCode == null) Gaps.empty else getVCodeButton,
+            /// _isShowDelete参数动态变化，为了不破坏树结构，false时放一个空Widget。
+            /// 对于其他参数，为初始配置参数，基本可以确定树结构，就不做空Widget处理。
+            if (_isShowDelete) clearButton else Gaps.empty,
+            if (widget.isInputPwd) Gaps.hGap15,
+            if (widget.isInputPwd) pwdVisible,
+            if (widget.getVCode != null) Gaps.hGap15,
+            if (widget.getVCode != null) getVCodeButton,
           ],
         )
       ],

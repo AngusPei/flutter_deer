@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_deer/util/change_notifier_manage.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
-import 'package:flutter_deer/util/toast.dart';
-import 'package:flutter_deer/util/utils.dart';
-import 'package:flutter_deer/widgets/app_bar.dart';
+import 'package:flutter_deer/util/toast_utils.dart';
+import 'package:flutter_deer/util/other_utils.dart';
+import 'package:flutter_deer/widgets/my_app_bar.dart';
 import 'package:flutter_deer/widgets/my_button.dart';
 import 'package:flutter_deer/widgets/my_scroll_view.dart';
 import 'package:flutter_deer/login/widgets/my_text_field.dart';
@@ -13,6 +13,9 @@ import 'package:flutter_deer/login/widgets/my_text_field.dart';
 
 /// design/1注册登录/index.html#artboard13
 class UpdatePasswordPage extends StatefulWidget {
+
+  const UpdatePasswordPage({Key key}) : super(key: key);
+
   @override
   _UpdatePasswordPageState createState() => _UpdatePasswordPageState();
 }
@@ -27,8 +30,8 @@ class _UpdatePasswordPageState extends State<UpdatePasswordPage> with ChangeNoti
 
   @override
   Map<ChangeNotifier, List<VoidCallback>> changeNotifier() {
-    final List<VoidCallback> callbacks = [_verify];
-    return {
+    final List<VoidCallback> callbacks = <VoidCallback>[_verify];
+    return <ChangeNotifier, List<VoidCallback>>{
       _oldPwdController: callbacks,
       _newPwdController: callbacks,
       _nodeText1: null,

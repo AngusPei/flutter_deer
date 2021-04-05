@@ -16,7 +16,7 @@ String _baseUrl;
 List<Interceptor> _interceptors = [];
 
 /// 初始化Dio配置
-void setInitDio({
+void configDio({
   int connectTimeout,
   int receiveTimeout,
   int sendTimeout,
@@ -37,18 +37,10 @@ typedef NetErrorCallback = Function(int code, String msg);
 /// @weilu https://github.com/simplezhli
 class DioUtils {
 
-  static final DioUtils _singleton = DioUtils._();
-  
-  static DioUtils get instance => DioUtils();
-
   factory DioUtils() => _singleton;
 
-  static Dio _dio;
-
-  Dio get dio => _dio;
-
   DioUtils._() {
-    BaseOptions _options = BaseOptions(
+    final BaseOptions _options = BaseOptions(
       connectTimeout: _connectTimeout,
       receiveTimeout: _receiveTimeout,
       sendTimeout: _sendTimeout,
@@ -78,6 +70,14 @@ class DioUtils {
       _dio.interceptors.add(interceptor);
     });
   }
+
+  static final DioUtils _singleton = DioUtils._();
+
+  static DioUtils get instance => DioUtils();
+
+  static Dio _dio;
+
+  Dio get dio => _dio;
 
   // 数据返回格式统一，统一处理异常
   Future<BaseEntity<T>> _request<T>(String method, String url, {
@@ -127,7 +127,7 @@ class DioUtils {
       queryParameters: queryParameters,
       options: options,
       cancelToken: cancelToken,
-    ).then((BaseEntity<T> result) {
+    ).then<void>((BaseEntity<T> result) {
       if (result.code == 0) {
         if (onSuccess != null) {
           onSuccess(result.data);

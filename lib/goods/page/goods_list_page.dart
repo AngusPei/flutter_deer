@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_deer/goods/models/goods_item_entity.dart';
 import 'package:flutter_deer/goods/provider/goods_page_provider.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
-import 'package:flutter_deer/util/toast.dart';
+import 'package:flutter_deer/util/toast_utils.dart';
 import 'package:flutter_deer/widgets/my_refresh_list.dart';
 import 'package:flutter_deer/widgets/state_layout.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +40,7 @@ class _GoodsListPageState extends State<GoodsListPage> with AutomaticKeepAliveCl
     // 初始化动画控制
     _controller = AnimationController(duration: const Duration(milliseconds: 450), vsync: this);
     // 动画曲线
-    var _curvedAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeOutSine);
+    final _curvedAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeOutSine);
     _animation = Tween(begin: 0.0, end: 1.1).animate(_curvedAnimation) ..addStatusListener((status) {
       _animationStatus = status;
     });
@@ -59,7 +59,7 @@ class _GoodsListPageState extends State<GoodsListPage> with AutomaticKeepAliveCl
 
   final List<String> _imgList = [
     'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3130502839,1206722360&fm=26&gp=0.jpg',
-    '', // 故意使用一张无效链接，触发默认显示图片
+    'https://xxx', // 故意使用一张无效链接，触发默认显示图片
     'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1762976310,1236462418&fm=26&gp=0.jpg',
     'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3659255919,3211745976&fm=26&gp=0.jpg',
     'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2085939314,235211629&fm=26&gp=0.jpg',
@@ -70,7 +70,8 @@ class _GoodsListPageState extends State<GoodsListPage> with AutomaticKeepAliveCl
     await Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         _page = 1;
-        _list = List.generate(widget.index == 0 ? 3 : 10, (i) => GoodsItemEntity(icon: _imgList[i % 6], title: '八月十五中秋月饼礼盒', type: i % 3));
+        _list = List.generate(widget.index == 0 ? 3 : 10, (i) =>
+            GoodsItemEntity(icon: _imgList[i % 6], title: '八月十五中秋月饼礼盒', type: i % 3));
       });
       _setGoodsCount(_list.length);
     });
@@ -79,7 +80,8 @@ class _GoodsListPageState extends State<GoodsListPage> with AutomaticKeepAliveCl
   Future _loadMore() async {
     await Future.delayed(const Duration(seconds: 2), () {
       setState(() {
-        _list.addAll(List.generate(10, (i) => GoodsItemEntity(icon: _imgList[i % 6], title: '八月十五中秋月饼礼盒', type: i % 3)));
+        _list.addAll(List.generate(10, (i) =>
+            GoodsItemEntity(icon: _imgList[i % 6], title: '八月十五中秋月饼礼盒', type: i % 3)));
         _page ++;
       });
       _setGoodsCount(_list.length);

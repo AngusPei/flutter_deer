@@ -6,20 +6,24 @@ import 'package:flutter_deer/order/page/order_page.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/shop/page/shop_page.dart';
 import 'package:flutter_deer/statistics/page/statistics_page.dart';
-import 'package:flutter_deer/util/double_tap_back_exit_app.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
+import 'package:flutter_deer/widgets/double_tap_back_exit_app.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
+
+  const Home({Key key}) : super(key: key);
+
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
 
+  static const double _imageSize = 25.0;
+
   List<Widget> _pageList;
-  
   final List<String> _appBarTitles = ['订单', '商品', '统计', '店铺'];
   final PageController _pageController = PageController();
 
@@ -33,44 +37,47 @@ class _HomeState extends State<Home> {
     super.initState();
     initData();
   }
-  
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   void initData() {
     _pageList = [
-      OrderPage(),
-      GoodsPage(),
-      StatisticsPage(),
-      ShopPage(),
+      const OrderPage(),
+      const GoodsPage(),
+      const StatisticsPage(),
+      const ShopPage(),
     ];
   }
 
   List<BottomNavigationBarItem> _buildBottomNavigationBarItem() {
     if (_list == null) {
-      var _tabImages = [
+      const _tabImages = [
         [
-          const LoadAssetImage('home/icon_order', width: 25.0, color: Colours.unselected_item_color,),
-          const LoadAssetImage('home/icon_order', width: 25.0, color: Colours.app_main,),
+          LoadAssetImage('home/icon_order', width: _imageSize, color: Colours.unselected_item_color,),
+          LoadAssetImage('home/icon_order', width: _imageSize, color: Colours.app_main,),
         ],
         [
-          const LoadAssetImage('home/icon_commodity', width: 25.0, color: Colours.unselected_item_color,),
-          const LoadAssetImage('home/icon_commodity', width: 25.0, color: Colours.app_main,),
+          LoadAssetImage('home/icon_commodity', width: _imageSize, color: Colours.unselected_item_color,),
+          LoadAssetImage('home/icon_commodity', width: _imageSize, color: Colours.app_main,),
         ],
         [
-          const LoadAssetImage('home/icon_statistics', width: 25.0, color: Colours.unselected_item_color,),
-          const LoadAssetImage('home/icon_statistics', width: 25.0, color: Colours.app_main,),
+          LoadAssetImage('home/icon_statistics', width: _imageSize, color: Colours.unselected_item_color,),
+          LoadAssetImage('home/icon_statistics', width: _imageSize, color: Colours.app_main,),
         ],
         [
-          const LoadAssetImage('home/icon_shop', width: 25.0, color: Colours.unselected_item_color,),
-          const LoadAssetImage('home/icon_shop', width: 25.0, color: Colours.app_main,),
+          LoadAssetImage('home/icon_shop', width: _imageSize, color: Colours.unselected_item_color,),
+          LoadAssetImage('home/icon_shop', width: _imageSize, color: Colours.app_main,),
         ]
       ];
-      _list = List.generate(4, (i) {
+      _list = List.generate(_tabImages.length, (i) {
         return BottomNavigationBarItem(
-            icon: _tabImages[i][0],
-            activeIcon: _tabImages[i][1],
-            title: Padding(
-              padding: const EdgeInsets.only(top: 1.5),
-              child: Text(_appBarTitles[i], key: Key(_appBarTitles[i]),),
-            )
+          icon: _tabImages[i][0],
+          activeIcon: _tabImages[i][1],
+          label: _appBarTitles[i],
         );
       });
     }
@@ -79,33 +86,30 @@ class _HomeState extends State<Home> {
 
   List<BottomNavigationBarItem> _buildDarkBottomNavigationBarItem() {
     if (_listDark == null) {
-      var _tabImagesDark = [
+      const _tabImagesDark = [
         [
-          const LoadAssetImage('home/icon_order', width: 25.0),
-          const LoadAssetImage('home/icon_order', width: 25.0, color: Colours.dark_app_main,),
+          LoadAssetImage('home/icon_order', width: _imageSize),
+          LoadAssetImage('home/icon_order', width: _imageSize, color: Colours.dark_app_main,),
         ],
         [
-          const LoadAssetImage('home/icon_commodity', width: 25.0),
-          const LoadAssetImage('home/icon_commodity', width: 25.0, color: Colours.dark_app_main,),
+          LoadAssetImage('home/icon_commodity', width: _imageSize),
+          LoadAssetImage('home/icon_commodity', width: _imageSize, color: Colours.dark_app_main,),
         ],
         [
-          const LoadAssetImage('home/icon_statistics', width: 25.0),
-          const LoadAssetImage('home/icon_statistics', width: 25.0, color: Colours.dark_app_main,),
+          LoadAssetImage('home/icon_statistics', width: _imageSize),
+          LoadAssetImage('home/icon_statistics', width: _imageSize, color: Colours.dark_app_main,),
         ],
         [
-          const LoadAssetImage('home/icon_shop', width: 25.0),
-          const LoadAssetImage('home/icon_shop', width: 25.0, color: Colours.dark_app_main,),
+          LoadAssetImage('home/icon_shop', width: _imageSize),
+          LoadAssetImage('home/icon_shop', width: _imageSize, color: Colours.dark_app_main,),
         ]
       ];
 
-      _listDark = List.generate(4, (i) {
+      _listDark = List.generate(_tabImagesDark.length, (i) {
         return BottomNavigationBarItem(
-            icon: _tabImagesDark[i][0],
-            activeIcon: _tabImagesDark[i][1],
-            title: Padding(
-              padding: const EdgeInsets.only(top: 1.5),
-              child: Text(_appBarTitles[i], key: Key(_appBarTitles[i]),),
-            )
+          icon: _tabImagesDark[i][0],
+          activeIcon: _tabImagesDark[i][1],
+          label: _appBarTitles[i],
         );
       });
     }
@@ -114,7 +118,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final bool isDark = ThemeUtils.isDark(context);
+    final bool isDark = context.isDark;
     return ChangeNotifierProvider<HomeProvider>(
       create: (_) => provider,
       child: DoubleTapBackExitApp(
@@ -122,7 +126,7 @@ class _HomeState extends State<Home> {
           bottomNavigationBar: Consumer<HomeProvider>(
             builder: (_, provider, __) {
               return BottomNavigationBar(
-                backgroundColor: ThemeUtils.getBackgroundColor(context),
+                backgroundColor: context.backgroundColor,
                 items: isDark ? _buildDarkBottomNavigationBarItem() : _buildBottomNavigationBarItem(),
                 type: BottomNavigationBarType.fixed,
                 currentIndex: provider.value,
@@ -138,18 +142,14 @@ class _HomeState extends State<Home> {
           ),
           // 使用PageView的原因参看 https://zhuanlan.zhihu.com/p/58582876
           body: PageView(
-            controller: _pageController,
-            onPageChanged: _onPageChanged,
-            children: _pageList,
             physics: const NeverScrollableScrollPhysics(), // 禁止滑动
+            controller: _pageController,
+            onPageChanged: (int index) => provider.value = index,
+            children: _pageList,
           )
         ),
       ),
     );
-  }
-
-  void _onPageChanged(int index) {
-    provider.value = index;
   }
 
 }

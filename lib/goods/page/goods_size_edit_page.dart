@@ -1,39 +1,23 @@
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
-import 'package:flutter_deer/util/toast.dart';
 import 'package:flutter_deer/widgets/my_button.dart';
 import 'package:flutter_deer/widgets/my_scroll_view.dart';
 import 'package:flutter_deer/widgets/selected_image.dart';
 import 'package:flutter_deer/widgets/text_field_item.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter_deer/res/resources.dart';
-import 'package:flutter_deer/widgets/app_bar.dart';
+import 'package:flutter_deer/widgets/my_app_bar.dart';
 
 /// design/4商品/index.html#artboard14
 class GoodsSizeEditPage extends StatefulWidget {
-  
+
+  const GoodsSizeEditPage({Key key}) : super(key: key);
+
   @override
   _GoodsSizeEditPageState createState() => _GoodsSizeEditPageState();
 }
 
 class _GoodsSizeEditPageState extends State<GoodsSizeEditPage> {
-
-  File _imageFile;
-  final ImagePicker picker = ImagePicker();
-
-  Future<void> _getImage() async {
-    try {
-      PickedFile pickedFile = await picker.getImage(source: ImageSource.gallery, maxWidth: 600);
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
-    } catch (e) {
-      Toast.show('没有权限，无法打开相册！');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,15 +30,13 @@ class _GoodsSizeEditPageState extends State<GoodsSizeEditPage> {
         children: <Widget>[
           Gaps.vGap5,
           const Padding(
-            padding: const EdgeInsets.only(left: 16.0),
+            padding: EdgeInsets.only(left: 16.0),
             child: Text('基本信息', style: TextStyles.textBold18),
           ),
           Gaps.vGap16,
-          Center(
+          const Center(
             child: SelectedImage(
               size: 96.0,
-              image: _imageFile,
-              onTap: _getImage
             ),
           ),
           Gaps.vGap8,
@@ -65,41 +47,41 @@ class _GoodsSizeEditPageState extends State<GoodsSizeEditPage> {
             ),
           ),
           Gaps.vGap16,
-          TextFieldItem(
+          const TextFieldItem(
             title: '分类名称',
             hintText: '填写该分类名称',
           ),
-          TextFieldItem(
+          const TextFieldItem(
             title: '折后价格',
             keyboardType: TextInputType.numberWithOptions(decimal: true),
             hintText: '填写该分类折后价格',
           ),
-          TextFieldItem(
+          const TextFieldItem(
             title: '库存数量',
             hintText: '填写该分类库存数量',
             keyboardType: TextInputType.number
           ),
-          TextFieldItem(
+          const TextFieldItem(
             title: '佣金金额',
             keyboardType: TextInputType.numberWithOptions(decimal: true)
           ),
-          TextFieldItem(
+          const TextFieldItem(
             title: '起购数量',
             keyboardType: TextInputType.number
           ),
           Gaps.vGap32,
           const Padding(
-            padding: const EdgeInsets.only(left: 16.0),
+            padding: EdgeInsets.only(left: 16.0),
             child: Text('折扣立减', style: TextStyles.textBold18),
           ),
           Gaps.vGap16,
-          TextFieldItem(
-              title: '立减金额',
-              keyboardType: TextInputType.number
+          const TextFieldItem(
+            title: '立减金额',
+            keyboardType: TextInputType.number,
           ),
-          TextFieldItem(
-              title: '抵扣金额',
-              keyboardType: TextInputType.number
+          const TextFieldItem(
+            title: '抵扣金额',
+            keyboardType: TextInputType.number,
           ),
           Gaps.vGap8,
         ],

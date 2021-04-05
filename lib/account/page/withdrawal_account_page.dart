@@ -4,13 +4,17 @@ import 'package:flutter_deer/account/models/withdrawal_account_model.dart';
 import 'package:flutter_deer/account/widgets/withdrawal_account_item.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
-import 'package:flutter_deer/widgets/app_bar.dart';
+import 'package:flutter_deer/widgets/my_app_bar.dart';
+import 'package:flutter_deer/widgets/my_button.dart';
 import 'package:flutter_deer/widgets/state_layout.dart';
 
 import '../account_router.dart';
 
 /// design/6店铺-账户/index.html#artboard26
 class WithdrawalAccountPage extends StatefulWidget {
+
+  const WithdrawalAccountPage({Key key}) : super(key: key);
+
   @override
   _WithdrawalAccountPageState createState() => _WithdrawalAccountPageState();
 }
@@ -19,7 +23,7 @@ class _WithdrawalAccountPageState extends State<WithdrawalAccountPage> {
   
   final List<WithdrawalAccountModel> _list = [];
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-  final Duration _kDuration = Duration(milliseconds: 300);
+  final Duration _kDuration = const Duration(milliseconds: 300);
   
   @override
   void initState() {
@@ -67,7 +71,7 @@ class _WithdrawalAccountPageState extends State<WithdrawalAccountPage> {
   
   void _removeItem(int index) {
     /// 先移除数据
-    WithdrawalAccountModel item = _list.removeAt(index);
+    final WithdrawalAccountModel item = _list.removeAt(index);
     _listKey.currentState.removeItem(
       index, (_, animation) => sizeItem(item, 0, animation), /// 构建移除Widget
       duration: _kDuration,
@@ -84,7 +88,7 @@ class _WithdrawalAccountPageState extends State<WithdrawalAccountPage> {
   }
 
   void _insertItem(int index) {
-    WithdrawalAccountModel item = WithdrawalAccountModel('weilu_deer', '微信', 1, '');
+    final WithdrawalAccountModel item = WithdrawalAccountModel('weilu_deer', '微信', 1, '');
     _list.insert(index, item);
     if (_list.length == 1) {
       setState(() {
@@ -117,29 +121,25 @@ class _WithdrawalAccountPageState extends State<WithdrawalAccountPage> {
                   ),
                 ),
                 Gaps.line,
-                Container(
-                  height: 54.0,
-                  width: double.infinity,
-                  child: FlatButton(
-                    textColor: Theme.of(context).errorColor,
-                    child: const Text('确认解绑', style: TextStyle(fontSize: Dimens.font_sp18)),
-                    onPressed: () {
-                      _removeItem(index);
-                      NavigatorUtils.goBack(context);
-                    },
-                  ),
+                MyButton(
+                  minHeight: 54.0,
+                  textColor: Theme.of(context).errorColor,
+                  text: '确认解绑',
+                  backgroundColor: Colors.transparent,
+                  onPressed: () {
+                    _removeItem(index);
+                    NavigatorUtils.goBack(context);
+                  },
                 ),
                 Gaps.line,
-                Container(
-                  height: 54.0,
-                  width: double.infinity,
-                  child: FlatButton(
-                    textColor: Colours.text_gray,
-                    child: const Text('取消', style: TextStyle(fontSize: Dimens.font_sp18)),
-                    onPressed: () {
-                      NavigatorUtils.goBack(context);
-                    },
-                  ),
+                MyButton(
+                  minHeight: 54.0,
+                  textColor: Colours.text_gray,
+                  text: '取消',
+                  backgroundColor: Colors.transparent,
+                  onPressed: () {
+                    NavigatorUtils.goBack(context);
+                  },
                 ),
               ],
             ),

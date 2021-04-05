@@ -1,15 +1,6 @@
 
 class GoodsSizeModel {
 
-  String icon;
-  String sizeName;
-  int stock;
-  String price;
-  int minSaleNum;
-  String reducePrice;
-  String charges;
-  String currencyPrice;
-
   GoodsSizeModel(this.icon, this.sizeName, this.stock, 
       this.price, this.minSaleNum, this.reducePrice,
       this.charges, this.currencyPrice);
@@ -24,8 +15,17 @@ class GoodsSizeModel {
         charges = map['charges'] as String,
         currencyPrice = map['currencyPrice'] as String;
 
+  String icon;
+  String sizeName;
+  int stock;
+  String price;
+  int minSaleNum;
+  String reducePrice;
+  String charges;
+  String currencyPrice;
+
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['icon'] = icon;
     data['sizeName'] = sizeName;
     data['stock'] = stock;

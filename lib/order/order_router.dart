@@ -1,6 +1,6 @@
 
 import 'package:fluro/fluro.dart';
-import 'package:flutter_deer/routers/router_init.dart';
+import 'package:flutter_deer/routers/i_router.dart';
 
 import 'page/order_info_page.dart';
 import 'page/order_page.dart';
@@ -16,11 +16,11 @@ class OrderRouter implements IRouterProvider{
   static String orderTrackPage = '/order/track';
   
   @override
-  void initRouter(Router router) {
-    router.define(orderPage, handler: Handler(handlerFunc: (_, __) => OrderPage()));
-    router.define(orderInfoPage, handler: Handler(handlerFunc: (_, __) => OrderInfoPage()));
-    router.define(orderSearchPage, handler: Handler(handlerFunc: (_, __) => OrderSearchPage()));
-    router.define(orderTrackPage, handler: Handler(handlerFunc: (_, __) => OrderTrackPage()));
+  void initRouter(FluroRouter router) {
+    router.define(orderPage, handler: Handler(handlerFunc: (_, __) => const OrderPage()));
+    router.define(orderInfoPage, handler: Handler(handlerFunc: (_, __) => const OrderInfoPage()));
+    router.define(orderSearchPage, handler: Handler(handlerFunc: (_, __) => const OrderSearchPage()));
+    router.define(orderTrackPage, handler: Handler(handlerFunc: (_, __) => const OrderTrackPage()));
   }
   
 }

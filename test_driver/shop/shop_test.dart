@@ -22,14 +22,14 @@ void main() {
     });
 
     test('店铺页测试',() async {
-      await driver.tap(find.byValueKey('店铺'));
+      await driver.tap(find.byTooltip('店铺'));
       await delayed();
-      await driver.tap(find.byValueKey('message'));
+      await driver.tap(find.byValueKey('message'), timeout: const Duration(minutes: 1),);
       await delayed();
       await driver.tap(find.byTooltip('Back'));
       await delayed();
       
-    });
+    }, timeout: const Timeout.factor(3));
 
     test('店铺设置页测试',() async {
       await driver.tap(find.text('店铺设置'));

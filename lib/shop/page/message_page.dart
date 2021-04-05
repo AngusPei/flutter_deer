@@ -2,11 +2,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/res/resources.dart';
-import 'package:flutter_deer/widgets/app_bar.dart';
+import 'package:flutter_deer/widgets/my_app_bar.dart';
 import 'package:flutter_deer/widgets/my_card.dart';
 
 /// design/8设置/index.html#artboard2
 class MessagePage extends StatefulWidget {
+
+  const MessagePage({Key key}) : super(key: key);
+
   @override
   _MessagePageState createState() => _MessagePageState();
 }
@@ -36,7 +39,7 @@ class _MessagePageState extends State<MessagePage> {
           controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 28.0),
-          itemBuilder: (_, index) => _MessageItem(),
+          itemBuilder: (_, __) => _MessageItem(),
         ),
       ),
     );
@@ -55,7 +58,7 @@ class _MessageItemState extends State<_MessageItem> {
     return Column(
       children: <Widget>[
         Gaps.vGap15,
-        Text('2019-5-31 17:19:36', style: Theme.of(context).textTheme.subtitle2),
+        Text('2021-5-31 17:19:36', style: Theme.of(context).textTheme.subtitle2),
         Gaps.vGap8,
         MyCard(
           child: Padding(
@@ -81,7 +84,7 @@ class _MessageItemState extends State<_MessageItem> {
                 Gaps.vGap8,
                 Gaps.line,
                 Gaps.vGap8,
-                Text('供货商由于[商品缺货]原因，取消了采购订单。', style: TextStyles.textSize12),
+                const Text('供货商由于[商品缺货]原因，取消了采购订单。', style: TextStyles.textSize12),
               ],
             ),
           ),

@@ -1,6 +1,4 @@
 
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_2d_amap/flutter_2d_amap.dart';
@@ -8,7 +6,6 @@ import 'package:flutter_deer/routers/fluro_navigator.dart';
 import 'package:flutter_deer/shop/shop_router.dart';
 import 'package:flutter_deer/store/store_router.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
-import 'package:flutter_deer/util/toast.dart';
 import 'package:flutter_deer/widgets/my_button.dart';
 import 'package:flutter_deer/widgets/my_scroll_view.dart';
 import 'package:flutter_deer/widgets/selected_image.dart';
@@ -16,35 +13,28 @@ import 'package:flutter_deer/widgets/selected_item.dart';
 import 'package:flutter_deer/widgets/text_field_item.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_deer/res/resources.dart';
-import 'package:flutter_deer/widgets/app_bar.dart';
+import 'package:flutter_deer/widgets/my_app_bar.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
 
 /// design/2店铺审核/index.html
 class StoreAuditPage extends StatefulWidget {
+
+  const StoreAuditPage({Key key}) : super(key: key);
+
   @override
   _StoreAuditPageState createState() => _StoreAuditPageState();
 }
 
 class _StoreAuditPageState extends State<StoreAuditPage> {
 
-  File _imageFile;
+  final GlobalKey<SelectedImageState> _imageGlobalKey = GlobalKey<SelectedImageState>();
   final FocusNode _nodeText1 = FocusNode();
   final FocusNode _nodeText2 = FocusNode();
   final FocusNode _nodeText3 = FocusNode();
   final ImagePicker picker = ImagePicker();
   String _address = '陕西省 西安市 雁塔区 高新六路201号';
-  
-  Future<void> _getImage() async {
-    try {
-      PickedFile pickedFile = await picker.getImage(source: ImageSource.gallery, maxWidth: 800, imageQuality: 95);
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
-    } catch (e) {
-      Toast.show('没有权限，无法打开相册！');
-    }
-  }
+
 
   KeyboardActionsConfig _buildConfig(BuildContext context) {
     return KeyboardActionsConfig(
@@ -52,15 +42,15 @@ class _StoreAuditPageState extends State<StoreAuditPage> {
       keyboardBarColor: ThemeUtils.getKeyboardActionsColor(context),
       nextFocus: true,
       actions: [
-        KeyboardAction(
+        KeyboardActionsItem(
           focusNode: _nodeText1,
           displayDoneButton: false,
         ),
-        KeyboardAction(
+        KeyboardActionsItem(
           focusNode: _nodeText2,
           displayDoneButton: false,
         ),
-        KeyboardAction(
+        KeyboardActionsItem(
           focusNode: _nodeText3,
           toolbarButtons: [
             (node) {
@@ -93,6 +83,7 @@ class _StoreAuditPageState extends State<StoreAuditPage> {
           padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
           child: MyButton(
             onPressed: () {
+              debugPrint('文件路径：${_imageGlobalKey.currentState.pickedFile?.path}');
               NavigatorUtils.push(context, StoreRouter.auditResultPage);
             },
             text: '提交',
@@ -114,8 +105,7 @@ class _StoreAuditPageState extends State<StoreAuditPage> {
       Gaps.vGap16,
       Center(
         child: SelectedImage(
-          image: _imageFile,
-          onTap: _getImage
+          key: _imageGlobalKey,
         ),
       ),
       Gaps.vGap10,
@@ -178,28 +168,35 @@ class _StoreAuditPageState extends State<StoreAuditPage> {
     showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
-        return SizedBox(
-          height: 360.0,
-          child: ListView.builder(
-            key: const Key('goods_sort'),
-            itemExtent: 48.0,
-            itemBuilder: (_, index) {
-              return InkWell(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  alignment: Alignment.centerLeft,
-                  child: Text(_list[index]),
-                ),
-                onTap: () {
-                  setState(() {
-                    _sortName = _list[index];
-                  });
-                  NavigatorUtils.goBack(context);
-                },
-              );
-            },
-            itemCount: _list.length,
-          ),
+        // 可滑动ListView关闭BottomSheet
+        return DraggableScrollableSheet(
+          key: const Key('goods_sort'),
+          initialChildSize: 0.7,
+          maxChildSize: 1,
+          minChildSize: 0.65,
+          expand: false,
+          builder: (_, scrollController) {
+            return ListView.builder(
+              controller: scrollController,
+              itemExtent: 48.0,
+              itemBuilder: (_, index) {
+                return InkWell(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(_list[index]),
+                  ),
+                  onTap: () {
+                    setState(() {
+                      _sortName = _list[index];
+                    });
+                    NavigatorUtils.goBack(context);
+                  },
+                );
+              },
+              itemCount: _list.length,
+            );
+          },
         );
       },
     );

@@ -6,8 +6,8 @@ import 'package:flutter_deer/shop/models/freight_config_model.dart';
 import 'package:flutter_deer/shop/widgets/price_input_dialog.dart';
 import 'package:flutter_deer/shop/widgets/range_price_input_dialog.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
-import 'package:flutter_deer/util/toast.dart';
-import 'package:flutter_deer/widgets/app_bar.dart';
+import 'package:flutter_deer/util/toast_utils.dart';
+import 'package:flutter_deer/widgets/my_app_bar.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
 import 'package:flutter_deer/widgets/my_button.dart';
 import 'package:flutter_deer/widgets/my_card.dart';
@@ -15,6 +15,9 @@ import 'package:flutter_deer/widgets/my_card.dart';
 
 /// design/7店铺-店铺配置/index.html
 class FreightConfigPage extends StatefulWidget {
+
+  const FreightConfigPage({Key key}) : super(key: key);
+
   @override
   _FreightConfigPageState createState() => _FreightConfigPageState();
 }
@@ -103,14 +106,15 @@ class _FreightConfigPageState extends State<FreightConfigPage> {
           margin: const EdgeInsets.only(bottom: 8.0),
           padding: const EdgeInsets.symmetric(vertical: 32.0),
           decoration: BoxDecoration(
-            color: ThemeUtils.isDark(context) ? Colours.dark_bg_gray : Colours.bg_gray,
+            color: context.isDark ? Colours.dark_bg_gray : Colours.bg_gray,
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: const LoadAssetImage('shop/tj',),
         ),
       ),
-    ) : Container(
-      margin: const EdgeInsets.only(bottom: 8.0),
+    ) :
+    Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
       child: MyCard(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -253,6 +257,7 @@ class _FreightConfigPageState extends State<FreightConfigPage> {
       builder: (BuildContext context) {
         return PriceInputDialog(
           title: _list[index].type == 1 ? '运费比率' : '运费金额',
+          inputMaxPrice: _list[index].type == 1 ? 100 : 100000,
           onPressed: (value) {
             setState(() {
               _list[index].price = value;

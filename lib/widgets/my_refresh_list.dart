@@ -48,7 +48,7 @@ class _DeerListViewState extends State<DeerListView> {
   
   @override
   Widget build(BuildContext context) {
-    Widget child = RefreshIndicator(
+    final Widget child = RefreshIndicator(
       onRefresh: widget.onRefresh,
       child: widget.itemCount == 0 ? 
       StateLayout(type: widget.stateType) : 
@@ -67,7 +67,7 @@ class _DeerListViewState extends State<DeerListView> {
       ),
     );
     return SafeArea(
-      child: NotificationListener(
+      child: NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification note) {
           /// 确保是垂直方向滚动，且滑动至底部
           if (note.metrics.pixels == note.metrics.maxScrollExtent && note.metrics.axis == Axis.vertical) {
@@ -99,7 +99,7 @@ class _DeerListViewState extends State<DeerListView> {
 
 class MoreWidget extends StatelessWidget {
   
-  const MoreWidget(this.itemCount, this.hasMore, this.pageSize);
+  const MoreWidget(this.itemCount, this.hasMore, this.pageSize, {Key key}): super(key: key);
 
   final int itemCount;
   final bool hasMore;
@@ -107,7 +107,7 @@ class MoreWidget extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    final TextStyle style = ThemeUtils.isDark(context) ? TextStyles.textGray14 : const TextStyle(color: Color(0x8A000000));
+    final TextStyle style = context.isDark ? TextStyles.textGray14 : const TextStyle(color: Color(0x8A000000));
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0),
       child: Row(

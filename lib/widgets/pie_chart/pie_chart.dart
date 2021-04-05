@@ -69,8 +69,8 @@ class _PieChartState extends State<PieChart> with SingleTickerProviderStateMixin
     for (int i = 0; i < widget.data.length; i++) {
       count += widget.data[i].number;
     }
-    final Color bgColor = ThemeUtils.getBackgroundColor(context);
-    final Color shadowColor = ThemeUtils.isDark(context) ? Colours.dark_bg_gray : const Color(0x80C8DAFA);
+    final Color bgColor = context.backgroundColor;
+    final Color shadowColor = context.isDark ? Colours.dark_bg_gray : const Color(0x80C8DAFA);
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -82,7 +82,7 @@ class _PieChartState extends State<PieChart> with SingleTickerProviderStateMixin
       child: RepaintBoundary(
         child: AnimatedBuilder(
           animation: animation,
-          builder: (_, child) {
+          builder: (_, Widget child) {
             return CustomPaint(
               painter: PieChartPainter(
                 widget.data,
@@ -132,7 +132,7 @@ class PieChartPainter extends CustomPainter {
       data.removeAt(10);
     }
    
-    data.sort((left,right) => right.number.compareTo(left.number));
+    data.sort((PieData left,PieData right) => right.number.compareTo(left.number));
     // 由大到小给予颜色
     for (int i = 0; i < data.length; i++) {
       data[i].color = PieChart.colorList[i];
@@ -207,7 +207,7 @@ class PieChartPainter extends CustomPainter {
 
   void drawPercentage(Canvas context, String percentage, double x, double y, Size size) {
     final TextSpan span = TextSpan(
-        style: TextStyle(color: Colors.white, fontSize: Dimens.font_sp12),
+        style: const TextStyle(color: Colors.white, fontSize: Dimens.font_sp12),
         text: percentage);
     final TextPainter tp = TextPainter(
         text: span,

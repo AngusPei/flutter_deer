@@ -18,21 +18,21 @@ class OrderTagItem extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 8.0),
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
       child: MyCard(
         child: Container(
           height: 34.0,
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             children: <Widget>[
-              if (ThemeUtils.isDark(context)) 
+              if (context.isDark)
                 const LoadAssetImage('order/icon_calendar_dark', width: 14.0, height: 14.0) 
               else
                 const LoadAssetImage('order/icon_calendar', width: 14.0, height: 14.0),
               Gaps.hGap10,
               Text(date),
-              Expanded(child: Gaps.empty),
+              const Expanded(child: Gaps.empty),
               Text('$orderTotal单')
             ],
           ),

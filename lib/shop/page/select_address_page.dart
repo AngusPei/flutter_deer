@@ -7,6 +7,9 @@ import 'package:flutter_deer/widgets/my_button.dart';
 import 'package:flutter_deer/widgets/search_bar.dart';
 
 class AddressSelectPage extends StatefulWidget {
+
+  const AddressSelectPage({Key key}) : super(key: key);
+
   @override
   _AddressSelectPageState createState() => _AddressSelectPageState();
 }
@@ -27,10 +30,11 @@ class _AddressSelectPageState extends State<AddressSelectPage> {
   @override
   void initState() {
     super.initState();
-    /// iOS配置key
-    if (defaultTargetPlatform == TargetPlatform.iOS) {
-      Flutter2dAMap.setApiKey('4327916279bf45a044bb53b947442387');
-    }
+    /// 配置key
+    Flutter2dAMap.setApiKey(
+      iOSKey: '4327916279bf45a044bb53b947442387',
+      webKey: '4e479545913a3a180b3cffc267dad646',
+    );
   }
   
   @override
@@ -40,7 +44,7 @@ class _AddressSelectPageState extends State<AddressSelectPage> {
       appBar: SearchBar(
         hintText: '搜索地址',
         onPressed: (text) {
-          _controller.animateTo(0.0, duration: Duration(milliseconds: 10), curve: Curves.ease);
+          _controller.animateTo(0.0, duration: const Duration(milliseconds: 10), curve: Curves.ease);
           _index = 0;
           if (_aMap2DController != null) {
             _aMap2DController.search(text);
@@ -53,9 +57,8 @@ class _AddressSelectPageState extends State<AddressSelectPage> {
             Expanded(
               flex: 9,
               child: AMap2DView(
-                webKey: '4e479545913a3a180b3cffc267dad646',
                 onPoiSearched: (result) {
-                  _controller.animateTo(0.0, duration: Duration(milliseconds: 10), curve: Curves.ease);
+                  _controller.animateTo(0.0, duration: const Duration(milliseconds: 10), curve: Curves.ease);
                   _index = 0;
                   _list = result;
                   setState(() {

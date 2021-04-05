@@ -4,10 +4,6 @@ import 'package:flutter_deer/generated/json/base/json_convert_content.dart';
 
 class BaseEntity<T> {
 
-  int code;
-  String message;
-  T data;
-
   BaseEntity(this.code, this.message, this.data);
 
   BaseEntity.fromJson(Map<String, dynamic> json) {
@@ -18,7 +14,11 @@ class BaseEntity<T> {
     }
   }
 
-  T _generateOBJ<T>(Object json) {
+  int code;
+  String message;
+  T data;
+
+  T _generateOBJ<O>(Object json) {
     if (T.toString() == 'String') {
       return json.toString() as T;
     } else if (T.toString() == 'Map<dynamic, dynamic>') {
