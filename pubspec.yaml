@@ -1,14 +1,14 @@
 name: flutter_deer
 description: Flutter Deer
 
-version: 1.1.6+16
+version: 1.2.0+18
 author: 唯鹿 <a05111993@163.com>
 homepage: https://weilu.blog.csdn.net/
 
 publish_to: 'none'
 
 environment:
-  sdk: ">=2.10.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
   flutter: ">=2.0.0"
 
 dependencies:
@@ -16,6 +16,8 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  # 去除网页URL中的“#”(hash) https://flutter.cn/docs/development/ui/navigation/url-strategies
+  url_strategy: 0.2.0
   # Localization https://github.com/dart-lang/intl
   intl: ^0.17.0
   # Toast插件 https://github.com/OpenFlutter/flutter_oktoast
@@ -23,52 +25,62 @@ dependencies:
   # 网络库 https://github.com/flutterchina/dio
   dio: ^4.0.0
   # https://github.com/ReactiveX/rxdart
-  rxdart: ^0.25.0
+  rxdart: ^0.27.1
   # Dart 常用工具类库 https://github.com/Sky24n/common_utils
-  common_utils: 1.2.4
+  common_utils: 2.0.2
   # Flutter 常用工具类库 https://github.com/Sky24n/flustars
-  flustars: ^0.3.3
-  # Flutter 轮播图 https://github.com/best-flutter/flutter_swiper
-  flutter_swiper: ^1.1.6  # flutter_swiper很久不维护，备用空安全版本：flutter_card_swiper: ^0.4.0
+  flustars: ^2.0.1
+  # Flutter 轮播图 https://github.com/lianyagang/flutter_swiper_null_safety
+  flutter_swiper_null_safety: ^1.0.2  # flutter_swiper很久不维护，可以使用空安全版本：flutter_swiper_null_safety
   # 启动URL的插件（支持Web） https://github.com/flutter/plugins/tree/master/packages/url_launcher
-  url_launcher: 6.0.3
+  url_launcher: 6.0.6
   # 图片选择插件（支持Web） https://github.com/flutter/plugins/tree/master/packages/image_picker
-  image_picker: 0.7.4
+  image_picker: 0.8.0+1
   # 侧滑删除 https://github.com/letsar/flutter_slidable
-  flutter_slidable: ^0.5.7
+  flutter_slidable: ^0.6.0
   # WebView插件 https://github.com/flutter/plugins/tree/master/packages/webview_flutter
-  webview_flutter: 2.0.2
+  webview_flutter: 2.0.8
   # 处理键盘事件 https://github.com/diegoveloper/flutter_keyboard_actions
   keyboard_actions: ^3.4.0
   # 列表悬浮头 https://github.com/fluttercommunity/flutter_sticky_headers
   sticky_headers: ^0.2.0
   # 城市选择列表 https://github.com/flutterchina/azlistview
-  azlistview: ^1.1.1
-  # 手势识别 https://github.com/aleksanderwozniak/simple_gesture_detector
-  # simple_gesture_detector: ^0.1.4
+  azlistview: ^2.0.0-nullsafety.0
   # 路由框架 https://github.com/theyakka/fluro
   fluro: ^2.0.3
   # 图片缓存 https://github.com/renefloor/flutter_cached_network_image
-  cached_network_image: ^2.5.1
+  cached_network_image: ^3.0.0
   # 格式化String https://github.com/Naddiseo/dart-sprintf
   sprintf: ^6.0.0
   # 状态管理 https://github.com/rrousselGit/provider
   provider: ^5.0.0
   # 扫码 https://github.com/juliuscanute/qr_code_scanner
-  qr_code_scanner: 0.4.0
+  qr_code_scanner: 0.5.1
   # App Shortcuts https://github.com/flutter/plugins/tree/master/packages/quick_actions
-  quick_actions: 0.6.0
-  # 刮刮卡 https://github.com/vintage/scratcher
-  scratcher: ^2.0.1
+  quick_actions: 0.6.0+2
   # 振动（支持Web） https://github.com/benjamindean/flutter_vibration
-  vibration: ^1.7.3
-  # 获取当前设备信息 https://github.com/flutter/plugins/tree/master/packages/device_info
-  device_info: 2.0.0
+  vibration: ^1.7.4-nullsafety.0
+  # 获取当前设备信息 https://github.com/fluttercommunity/plus_plugins/tree/main/packages/device_info_plus
+  device_info_plus: 1.0.1
+  # 改变桌面端窗口大小(MacOS/Linux/Windows) https://github.com/mix1009/desktop_window
+  desktop_window: 0.4.0
   # 高德2D地图插件（支持Web） https://github.com/simplezhli/flutter_2d_amap
   flutter_2d_amap:
     git:
       ref: 'fdf1e412'
       url: 'https://github.com/simplezhli/flutter_2d_amap.git'
+  # demo 用到的库
+  # 刮刮卡 https://github.com/vintage/scratcher
+  scratcher: ^2.1.0
+  # 动画效果 https://github.com/xvrh/lottie-flutter
+  lottie: ^1.0.1
+
+# flutter 2.0 中flutter_driver与common_utils、lottie等个别库依赖冲突，用依赖版本覆盖处理。
+# 使用flutter 2.2无需添加
+#dependency_overrides:
+#  archive: ^3.1.2
+#  crypto: ^3.0.1
+#  convert: ^3.0.0
 
 dev_dependencies:
   # Widget测试
@@ -83,7 +95,7 @@ dev_dependencies:
 #  flutter_goldens:
 #    sdk: flutter
   # 单元测试
-  test: ^1.16.5
+  test: ^1.16.8
 
 # For information on the generic Dart part of this file, see the
 # following page: https:/w.dartlang.org/tools/pub/pubspec
@@ -109,6 +121,7 @@ flutter:
     - assets/images/shop/
     - assets/images/account/
     - assets/images/statistic/
+    - assets/lottie/
     
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a

@@ -1,9 +1,8 @@
-
 import 'dart:ui';
 
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_deer/common/common.dart';
+import 'package:flutter_deer/res/constant.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
 import 'package:flutter_deer/util/toast_utils.dart';
 import 'package:keyboard_actions/keyboard_actions_item.dart';
@@ -33,7 +32,7 @@ class Utils {
   }
 
   static String formatPrice(String price, {MoneyFormat format = MoneyFormat.END_INTEGER}){
-    return MoneyUtil.changeYWithUnit(NumUtil.getDoubleByValueStr(price), MoneyUnit.YUAN, format: format);
+    return MoneyUtil.changeYWithUnit(NumUtil.getDoubleByValueStr(price) ?? 0, MoneyUnit.YUAN, format: format);
   }
 
   static KeyboardActionsConfig getKeyboardActionsConfig(BuildContext context, List<FocusNode> list) {
@@ -57,8 +56,8 @@ class Utils {
     );
   }
 
-  static String getCurrLocale() {
-    final String locale = SpUtil.getString(Constant.locale);
+  static String? getCurrLocale() {
+    final String locale = SpUtil.getString(Constant.locale)!;
     if (locale == '') {
       return window.locale.languageCode;
     }
@@ -67,11 +66,10 @@ class Utils {
 
 }
 
-
-Future<T> showElasticDialog<T>({
-  @required BuildContext context,
+Future<T?> showElasticDialog<T>({
+  required BuildContext context,
   bool barrierDismissible = true,
-  WidgetBuilder builder,
+  required WidgetBuilder builder,
 }) {
 
   return showGeneralDialog(
@@ -108,4 +106,9 @@ Widget _buildDialogTransitions(BuildContext context, Animation<double> animation
       child: child,
     ),
   );
+}
+
+/// String 空安全处理
+extension StringExtension on String? {
+  String get nullSafe => this ?? '';
 }

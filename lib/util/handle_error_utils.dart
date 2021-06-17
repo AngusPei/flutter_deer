@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_deer/common/common.dart';
+import 'package:flutter_deer/res/constant.dart';
 
 /// 捕获全局异常，进行统一处理。
 void handleError(void body) {
@@ -12,7 +12,7 @@ void handleError(void body) {
       FlutterError.dumpErrorToConsole(details);
     } else {
       // release时，将异常交由zone统一处理。
-      Zone.current.handleUncaughtError(details.exception, details.stack);
+      Zone.current.handleUncaughtError(details.exception, details.stack!);
     }
   };
 

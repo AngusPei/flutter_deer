@@ -9,7 +9,7 @@ import 'package:flutter_deer/widgets/my_button.dart';
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   const MyAppBar({
-    Key key,
+    Key? key,
     this.backgroundColor,
     this.title = '',
     this.centerTitle = '',
@@ -20,32 +20,29 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.isBack = true
   }): super(key: key);
 
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final String title;
   final String centerTitle;
   final String backImg;
-  final Color backImgColor;
+  final Color? backImgColor;
   final String actionName;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool isBack;
 
   @override
   Widget build(BuildContext context) {
-    Color _backgroundColor;
-
-    if (backgroundColor == null) {
-      _backgroundColor = context.backgroundColor;
-    } else {
-      _backgroundColor = backgroundColor;
-    }
+    final Color _backgroundColor = backgroundColor ?? context.backgroundColor;
 
     final SystemUiOverlayStyle _overlayStyle = ThemeData.estimateBrightnessForColor(_backgroundColor) == Brightness.dark
         ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
 
     final Widget back = isBack ? IconButton(
-      onPressed: () {
+      onPressed: () async {
         FocusManager.instance.primaryFocus?.unfocus();
-        Navigator.maybePop(context);
+        final isBack = await Navigator.maybePop(context);
+        if (!isBack) {
+          await SystemNavigator.pop();
+        }
       },
       tooltip: 'Back',
       padding: const EdgeInsets.all(12.0),

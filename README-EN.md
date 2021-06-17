@@ -19,7 +19,7 @@ The effect of some pages is as follows:
 | ![](./preview/Screenshot_13.png)   |  ![](./preview/Screenshot_14.png)   | ![](./preview/Screenshot_15.png)  |  ![](./preview/Screenshot_17.png)  |
 | ![](./preview/Screenshot_18.png)   |  ![](./preview/Screenshot_19.png)   | ![](./preview/Screenshot_20.png)  |  ![](./preview/Screenshot_21.png)  |
 | ![](./preview/Screenshot_22.jpg)   |  ![](./preview/Screenshot_23.jpg)   | ![](./preview/Screenshot_24.jpg)  |  ![](./preview/Screenshot_25.jpg)  |
-| ![](./preview/Screenshot_26.jpg)   |  ![](./preview/Screenshot_27.jpg)   |  |  |
+| ![](./preview/Screenshot_26.jpg)   |  ![](./preview/Screenshot_27.jpg)   | ![](./preview/lottie.gif)         |  |
 
 ## Content
 
@@ -59,9 +59,9 @@ Web：https://simplezhli.github.io/flutter_deer/
 
 [![Build Status](https://github.com/simplezhli/flutter_deer/workflows/flutter_deer%20driver/badge.svg?branch=master)](https://github.com/simplezhli/flutter_deer/actions?query=workflow%3A%22flutter_deer+driver%22+branch%3Amaster)
 
-    1. Flutter version 2.0.3
+    1. Flutter version 2.2.1
 
-    2. Dart version 2.12.2
+    2. Dart version 2.13.1
 
 ## Precautions
 
@@ -75,7 +75,7 @@ Web：https://simplezhli.github.io/flutter_deer/
 
 - I have added a relative path to the design drawings in the page notes. I can search or find the corresponding page. I hope it will help you.
 
-- This project uses the FlutterJsonBeanFactory plugin to generate beans. 
+- This project uses the [FlutterJsonBeanFactory](https://github.com/zhangruiyu/FlutterJsonBeanFactory) plugin to generate beans.
 
 ## Summary of experience
 
@@ -137,7 +137,9 @@ Web：https://simplezhli.github.io/flutter_deer/
 | [sprintf](https://github.com/Naddiseo/dart-sprintf)                   | **Format String**   |
 | [qr_code_scanner](https://github.com/juliuscanute/qr_code_scanner)     | **Scan code** |
 | [intl](https://github.com/dart-lang/intl)     | **Localization** |
+| [device_info_plus](https://github.com/fluttercommunity/plus_plugins/tree/main/packages/device_info_plus)     | **Device info** |
 | [vibration](https://github.com/benjamindean/flutter_vibration)     | **Vibration** |
+| [lottie](https://github.com/xvrh/lottie-flutter)     | **lottie** |
 
 For details, please refer to the [pubspec.yaml](https://github.com/simplezhli/flutter_deer/blob/master/pubspec.yaml) file.  
 
@@ -145,7 +147,9 @@ For details, please refer to the [pubspec.yaml](https://github.com/simplezhli/fl
 
 * [x] Web support.
 
-* [ ] Migrate to null-safety.
+* [x] Migrate to null-safety.
+
+* [ ] Migrate to Navigator 2.0.
 
 ## Thanks For
 
@@ -159,7 +163,7 @@ For details, please refer to the [pubspec.yaml](https://github.com/simplezhli/fl
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+       https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,

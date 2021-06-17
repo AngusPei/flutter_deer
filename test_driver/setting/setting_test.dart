@@ -1,3 +1,4 @@
+
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
 
@@ -6,7 +7,7 @@ import '../tools/test_utils.dart';
 void main([List<String> args = const <String>[]]) {
 
   group('设置部分：', () {
-    FlutterDriver driver;
+    late FlutterDriver driver;
 
     setUpAll(() async {
       driver = await FlutterDriver.connect();
@@ -18,7 +19,7 @@ void main([List<String> args = const <String>[]]) {
     });
 
     tearDownAll(() async {
-      await driver?.close();
+      await driver.close();
     });
 
     test('设置页测试',() async {

@@ -1,14 +1,15 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_2d_amap/flutter_2d_amap.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
+import 'package:flutter_deer/util/toast_utils.dart';
 import 'package:flutter_deer/widgets/my_button.dart';
+import 'package:flutter_deer/util/other_utils.dart';
 import 'package:flutter_deer/widgets/search_bar.dart';
 
 class AddressSelectPage extends StatefulWidget {
 
-  const AddressSelectPage({Key key}) : super(key: key);
+  const AddressSelectPage({Key? key}) : super(key: key);
 
   @override
   _AddressSelectPageState createState() => _AddressSelectPageState();
@@ -19,7 +20,7 @@ class _AddressSelectPageState extends State<AddressSelectPage> {
   List<PoiSearch> _list = [];
   int _index = 0;
   final ScrollController _controller = ScrollController();
-  AMap2DController _aMap2DController;
+  AMap2DController? _aMap2DController;
 
   @override
   void dispose() {
@@ -46,9 +47,7 @@ class _AddressSelectPageState extends State<AddressSelectPage> {
         onPressed: (text) {
           _controller.animateTo(0.0, duration: const Duration(milliseconds: 10), curve: Curves.ease);
           _index = 0;
-          if (_aMap2DController != null) {
-            _aMap2DController.search(text);
-          }
+          _aMap2DController?.search(text);
         },
       ),
       body: SafeArea(
@@ -88,9 +87,7 @@ class _AddressSelectPageState extends State<AddressSelectPage> {
                     date: _list[index],
                     onTap: () {
                       _index = index;
-                      if (_aMap2DController != null) {
-                        _aMap2DController.move(_list[index].latitude, _list[index].longitude);
-                      }
+                      _aMap2DController?.move(_list[index].latitude.nullSafe, _list[index].longitude.nullSafe);
                       setState(() {
                       });
                     },
@@ -100,6 +97,10 @@ class _AddressSelectPageState extends State<AddressSelectPage> {
             ),
             MyButton(
               onPressed: () {
+                if (_list.isEmpty) {
+                  Toast.show('未选择地址！');
+                  return;
+                }
                 NavigatorUtils.goBackWithParams(context, _list[_index]);
               },
               text: '确认选择地址',
@@ -114,15 +115,15 @@ class _AddressSelectPageState extends State<AddressSelectPage> {
 class _AddressItem extends StatelessWidget {
 
   const _AddressItem({
-    Key key,
-    @required this.date,
+    Key? key,
+    required this.date,
     this.isSelected = false,
     this.onTap,
   }) : super(key: key);
 
   final PoiSearch date;
   final bool isSelected;
-  final GestureTapCallback onTap;
+  final GestureTapCallback? onTap;
   
   @override
   Widget build(BuildContext context) {
@@ -136,10 +137,9 @@ class _AddressItem extends StatelessWidget {
           children: <Widget>[
             Expanded(
               child: Text(
-                date.provinceName + ' ' +
-                date.cityName + ' ' +
-                date.adName + ' ' +
-                date.title,
+                date.provinceName.nullSafe + ' ' +
+                date.cityName.nullSafe + ' ' +
+                date.adName.nullSafe + ' ' + date.title.nullSafe,
               ),
             ),
             Visibility(

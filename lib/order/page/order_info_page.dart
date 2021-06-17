@@ -1,8 +1,8 @@
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
+import 'package:flutter_deer/util/device_utils.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
 import 'package:flutter_deer/util/other_utils.dart';
 import 'package:flutter_deer/widgets/my_app_bar.dart';
@@ -16,7 +16,7 @@ import '../order_router.dart';
 /// design/3订单/index.html#artboard10
 class OrderInfoPage extends StatefulWidget {
 
-  const OrderInfoPage({Key key}) : super(key: key);
+  const OrderInfoPage({Key? key}) : super(key: key);
 
   @override
   _OrderInfoPageState createState() => _OrderInfoPageState();
@@ -178,7 +178,7 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
         padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: Row(
           children: <Widget>[
-            Text(title, style: Theme.of(context).textTheme.subtitle2.copyWith(fontSize: Dimens.font_sp14)),
+            Text(title, style: Theme.of(context).textTheme.subtitle2?.copyWith(fontSize: Dimens.font_sp14)),
             Gaps.hGap8,
             Text(content)
           ],
@@ -252,12 +252,12 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
       alignment: Alignment.center,
       child: Text(
         text,
-        style: const TextStyle(color: Colors.white, fontSize: Dimens.font_sp10, height: 1.1,),
+        style: TextStyle(color: Colors.white, fontSize: Dimens.font_sp10, height: Device.isAndroid ? 1.1 : null,),
       ),
     );
   }
   
-  Widget _buildGoodsInfoItem(String title, String content, {Color contentTextColor}) {
+  Widget _buildGoodsInfoItem(String title, String content, {Color? contentTextColor}) {
     return MergeSemantics(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -266,7 +266,7 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
           children: <Widget>[
             Text(title),
             Text(content, style: TextStyle(
-              color: contentTextColor ?? Theme.of(context).textTheme.bodyText2.color,
+              color: contentTextColor ?? Theme.of(context).textTheme.bodyText2?.color,
               fontWeight: FontWeight.bold
             ))
           ],

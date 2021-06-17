@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:common_utils/common_utils.dart';
@@ -17,7 +16,7 @@ import 'package:flutter_deer/util/date_utils.dart' as date;
 /// design/5统计/index.html#artboard6
 class OrderStatisticsPage extends StatefulWidget {
 
-  const OrderStatisticsPage(this.index, {Key key}) : super(key: key);
+  const OrderStatisticsPage(this.index, {Key? key}) : super(key: key);
 
   final int index;
 
@@ -28,18 +27,18 @@ class OrderStatisticsPage extends StatefulWidget {
 class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerProviderStateMixin {
   
   int _selectedIndex = 2;
-  DateTime _initialDay;
-  Iterable<DateTime> _weeksDays;
-  List<DateTime> _currentMonthsDays;
+  late DateTime _initialDay;
+  late Iterable<DateTime> _weeksDays;
+  late List<DateTime> _currentMonthsDays;
   // 周视图中选择的日期
-  int _selectedWeekDay;
+  late int _selectedWeekDay;
   // 月视图中选择的日期
-  DateTime _selectedDay;
+  late DateTime _selectedDay;
   // 年视图中选择的月份
-  int _selectedMonth;
+  late int _selectedMonth;
   final List<int> _monthList = [];
   bool _isExpanded = true;
-  Color _unSelectedTextColor;
+  late Color _unSelectedTextColor;
   
   static const List<String> _weeks = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
 
@@ -135,7 +134,7 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
                   children: <Widget>[
                     Text(widget.index == 1 ? '订单走势' : '交易额走势', style: TextStyles.textBold18),
                     Gaps.vGap16,
-                    _buildChart(Colours.app_main, const Color(0x805793FA), widget.index == 1 ? '全部订单' : '交易额(元)', '3000'),
+                    _buildChart(Colours.app_main, Colours.shadow_blue, widget.index == 1 ? '全部订单' : '交易额(元)', '3000'),
                     if (widget.index == 1) Column(
                       children: <Widget>[
                         Gaps.vGap16,
@@ -174,11 +173,14 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
     
     final Column body = Column(
       children: <Widget>[
+        Gaps.vGap16,
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
+            Gaps.hGap16,
             Text(title, style: const TextStyle(color: Colors.white)),
+            const Spacer(),
             Text(count, style: const TextStyle(color: Colors.white)),
+            Gaps.hGap16,
           ],
         ),
         Gaps.vGap4,
@@ -196,7 +198,7 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
               ),
             ],
             config: BezierChartConfig(
-              footerHeight: 0,
+              footerHeight: 16,
               showVerticalIndicator: false,
               verticalIndicatorFixedPosition: false,
               snap: true,
@@ -213,7 +215,7 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
         color: color,
         shadowColor: shadowColor,
         child: Container(
-          padding: const EdgeInsets.all(16.0),
+          //padding: const EdgeInsets.symmetric(horizontal: 16.0),
           decoration: BoxDecoration(
             image: DecorationImage(
               image: ImageUtils.getAssetImage('statistic/chart_fg'),
@@ -254,7 +256,7 @@ class _OrderStatisticsPageState extends State<OrderStatisticsPage> with TickerPr
   }
 
   Widget _buildCalendar() {
-    List<Widget> children;
+    List<Widget> children = [];
     if (_selectedIndex == 0) {
       children = _builderYearCalendar();
     } else if (_selectedIndex == 1) {

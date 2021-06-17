@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/goods/page/goods_page.dart';
 import 'package:flutter_deer/home/provider/home_provider.dart';
@@ -13,24 +12,24 @@ import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
 
-  const Home({Key key}) : super(key: key);
+  const Home({Key? key}) : super(key: key);
 
   @override
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with RestorationMixin{
 
   static const double _imageSize = 25.0;
 
-  List<Widget> _pageList;
+  late List<Widget> _pageList;
   final List<String> _appBarTitles = ['订单', '商品', '统计', '店铺'];
   final PageController _pageController = PageController();
 
   HomeProvider provider = HomeProvider();
 
-  List<BottomNavigationBarItem> _list;
-  List<BottomNavigationBarItem> _listDark;
+  List<BottomNavigationBarItem>? _list;
+  List<BottomNavigationBarItem>? _listDark;
 
   @override
   void initState() {
@@ -81,7 +80,7 @@ class _HomeState extends State<Home> {
         );
       });
     }
-    return _list;
+    return _list!;
   }
 
   List<BottomNavigationBarItem> _buildDarkBottomNavigationBarItem() {
@@ -113,7 +112,7 @@ class _HomeState extends State<Home> {
         );
       });
     }
-    return _listDark;
+    return _listDark!;
   }
 
   @override
@@ -150,6 +149,14 @@ class _HomeState extends State<Home> {
         ),
       ),
     );
+  }
+
+  @override
+  String? get restorationId => 'home';
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    registerForRestoration(provider, 'BottomNavigationBarCurrentIndex');
   }
 
 }

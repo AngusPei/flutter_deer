@@ -1,8 +1,8 @@
-
 import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/goods/models/goods_item_entity.dart';
 import 'package:flutter_deer/res/resources.dart';
+import 'package:flutter_deer/util/device_utils.dart';
 import 'package:flutter_deer/util/theme_utils.dart';
 import 'package:flutter_deer/util/other_utils.dart';
 import 'package:flutter_deer/widgets/load_image.dart';
@@ -15,16 +15,17 @@ import 'menu_reveal.dart';
 class GoodsItem extends StatelessWidget {
   
   const GoodsItem({
-    Key key,
-    @required this.item,
-    @required this.index,
-    @required this.selectIndex,
-    @required this.onTapMenu,
-    @required this.onTapEdit,
-    @required this.onTapOperation,
-    @required this.onTapDelete,
-    @required this.onTapMenuClose,
-    @required this.animation
+    Key? key,
+    required this.item,
+    required this.index,
+    required this.selectIndex,
+    required this.onTapMenu,
+    required this.onTapEdit,
+    required this.onTapOperation,
+    required this.onTapDelete,
+    required this.onTapMenuClose,
+    required this.animation,
+    required this.heroTag,
   }): super(key: key);
 
   final GoodsItemEntity item;
@@ -36,13 +37,19 @@ class GoodsItem extends StatelessWidget {
   final VoidCallback onTapDelete;
   final VoidCallback onTapMenuClose;
   final Animation<double> animation;
+  final String heroTag;
   
   @override
   Widget build(BuildContext context) {
     final Row child = Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        ExcludeSemantics(child: LoadImage(item.icon, width: 72.0, height: 72.0)),
+        ExcludeSemantics(
+          child: Hero(
+            tag: heroTag,
+            child: LoadImage(item.icon, width: 72.0, height: 72.0),
+          ),
+        ),
         Gaps.hGap8,
         Expanded(
           child: Column(
@@ -137,10 +144,10 @@ class GoodsItem extends StatelessWidget {
       child: AnimatedBuilder(
         animation: animation,
         child: _buildGoodsMenuContent(context),
-        builder:(_, Widget child) {
+        builder: (_, Widget? child) {
           return MenuReveal(
             revealPercent: animation.value,
-            child: child
+            child: child!
           );
         }
       ),
@@ -206,12 +213,12 @@ class GoodsItem extends StatelessWidget {
 class _GoodsItemTag extends StatelessWidget {
   
   const _GoodsItemTag({
-    Key key,
-    this.color,
-    this.text,
+    Key? key,
+    required this.color,
+    required this.text,
   }): super(key: key);
 
-  final Color color;
+  final Color? color;
   final String text;
   
   @override
@@ -227,10 +234,10 @@ class _GoodsItemTag extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         text,
-        style: const TextStyle(
+        style: TextStyle(
           color: Colors.white,
           fontSize: Dimens.font_sp10,
-          height: 1.1,
+          height: Device.isAndroid ? 1.1 : null,
         ),
       ),
     );

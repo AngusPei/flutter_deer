@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_deer/goods/provider/goods_sort_provider.dart';
 import 'package:flutter_deer/goods/widgets/goods_sort_bottom_sheet.dart';
@@ -20,10 +19,18 @@ import '../goods_router.dart';
 /// design/4商品/index.html#artboard5
 class GoodsEditPage extends StatefulWidget {
   
-  const GoodsEditPage({Key key, this.isAdd = true, this.isScan = false}) : super(key: key);
+  const GoodsEditPage({
+    Key? key,
+    this.isAdd = true,
+    this.isScan = false,
+    this.heroTag,
+    this.goodsImageUrl
+  }) : super(key: key);
   
   final bool isAdd;
   final bool isScan;
+  final String? heroTag;
+  final String? goodsImageUrl;
   
   @override
   _GoodsEditPageState createState() => _GoodsEditPageState();
@@ -31,13 +38,13 @@ class GoodsEditPage extends StatefulWidget {
 
 class _GoodsEditPageState extends State<GoodsEditPage> {
 
-  String _goodsSortName;
+  String? _goodsSortName;
   final TextEditingController _codeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       if (widget.isScan) {
         _scan();
       }
@@ -73,8 +80,10 @@ class _GoodsEditPageState extends State<GoodsEditPage> {
             ),
           ),
           Gaps.vGap16,
-          const Center(
+          Center(
             child: SelectedImage(
+              heroTag: widget.heroTag,
+              url: widget.goodsImageUrl,
               size: 96.0,
             ),
           ),
@@ -82,7 +91,7 @@ class _GoodsEditPageState extends State<GoodsEditPage> {
           Center(
             child: Text(
               '点击添加商品图片',
-              style: Theme.of(context).textTheme.subtitle2.copyWith(fontSize: Dimens.font_sp14),
+              style: Theme.of(context).textTheme.subtitle2?.copyWith(fontSize: Dimens.font_sp14),
             ),
           ),
           Gaps.vGap16,

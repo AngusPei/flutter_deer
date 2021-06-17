@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -33,7 +32,7 @@ import 'package:flutter/widgets.dart';
 ///   final FocusNode _nodeText = FocusNode();
 ///
 ///   @override
-///   Map<ChangeNotifier, List<VoidCallback>> changeNotifier() {
+///   Map<ChangeNotifier, List<VoidCallback>?>? changeNotifier() {
 ///     return {
 ///       _controller: [callback],
 ///       _nodeText: null,
@@ -43,9 +42,9 @@ import 'package:flutter/widgets.dart';
 /// ```
 mixin ChangeNotifierMixin<T extends StatefulWidget> on State<T> {
 
-  Map<ChangeNotifier, List<VoidCallback>> _map;
+  Map<ChangeNotifier?, List<VoidCallback>?>? _map;
 
-  Map<ChangeNotifier, List<VoidCallback>> changeNotifier();
+  Map<ChangeNotifier, List<VoidCallback>?>? changeNotifier();
   
   @override
   void initState() {

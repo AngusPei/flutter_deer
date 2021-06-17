@@ -1,15 +1,11 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_2d_amap/flutter_2d_amap.dart';
 import 'package:flutter_deer/res/resources.dart';
 import 'package:flutter_deer/routers/fluro_navigator.dart';
-import 'package:flutter_deer/shop/page/input_text_page.dart';
 import 'package:flutter_deer/shop/widgets/pay_type_dialog.dart';
 import 'package:flutter_deer/shop/shop_router.dart';
 import 'package:flutter_deer/shop/widgets/price_input_dialog.dart';
 import 'package:flutter_deer/shop/widgets/send_type_dialog.dart';
-import 'package:flutter_deer/util/app_navigator.dart';
 import 'package:flutter_deer/util/other_utils.dart';
 import 'package:flutter_deer/widgets/my_app_bar.dart';
 import 'package:flutter_deer/widgets/click_item.dart';
@@ -19,7 +15,7 @@ import 'package:flutter_deer/widgets/my_scroll_view.dart';
 /// design/7店铺-店铺配置/index.html#artboard17
 class ShopSettingPage extends StatefulWidget {
 
-  const ShopSettingPage({Key key}) : super(key: key);
+  const ShopSettingPage({Key? key}) : super(key: key);
 
   @override
   _ShopSettingPageState createState() => _ShopSettingPageState();
@@ -175,10 +171,9 @@ class _ShopSettingPageState extends State<ShopSettingPage> {
               NavigatorUtils.pushResult(context, ShopRouter.addressSelectPage, (result) {
                 setState(() {
                   final PoiSearch model = result as PoiSearch;
-                  _address = model.provinceName + ' ' +
-                      model.cityName + ' ' +
-                      model.adName + ' ' +
-                      model.title;
+                  _address = model.provinceName.nullSafe + ' ' +
+                      model.cityName.nullSafe + ' ' +
+                      model.adName.nullSafe + ' ' + model.title.nullSafe;
                 });
               });
             },
@@ -211,16 +206,17 @@ class _ShopSettingPageState extends State<ShopSettingPage> {
   }
 
   void _goInputTextPage(BuildContext context, String title,
-      String hintText, String content, Function(Object) function, {TextInputType keyboardType}) {
-    AppNavigator.pushResult(
-      context,
-      InputTextPage(
-        title: title,
-        hintText: hintText,
-        content: content,
-        keyboardType: keyboardType,
-      ),
-      function,
+      String hintText, String content, Function(Object?) function,
+      {TextInputType? keyboardType}) {
+
+    NavigatorUtils.pushResult(context,
+        ShopRouter.inputTextPage, function,
+        arguments: InputTextPageArgumentsData(
+          title: title,
+          hintText: hintText,
+          content: content,
+          keyboardType: keyboardType,
+        )
     );
   }
 
@@ -255,7 +251,7 @@ class _ShopSettingPageState extends State<ShopSettingPage> {
   }
 
   void _showSendTypeDialog() {
-    showElasticDialog <void>(
+    showElasticDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
@@ -269,4 +265,20 @@ class _ShopSettingPageState extends State<ShopSettingPage> {
       },
     );
   }
+}
+
+
+class InputTextPageArgumentsData {
+
+  InputTextPageArgumentsData({
+    required this.title,
+    this.content,
+    this.hintText,
+    this.keyboardType,
+});
+
+  late String title;
+  late String? content;
+  late String? hintText;
+  late TextInputType? keyboardType;
 }

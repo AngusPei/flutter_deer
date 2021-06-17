@@ -19,11 +19,11 @@
 | ![](./preview/Screenshot_13.png)   |  ![](./preview/Screenshot_14.png)   | ![](./preview/Screenshot_15.png)  |  ![](./preview/Screenshot_17.png)  |
 | ![](./preview/Screenshot_18.png)   |  ![](./preview/Screenshot_19.png)   | ![](./preview/Screenshot_20.png)  |  ![](./preview/Screenshot_21.png)  |
 | ![](./preview/Screenshot_22.jpg)   |  ![](./preview/Screenshot_23.jpg)   | ![](./preview/Screenshot_24.jpg)  |  ![](./preview/Screenshot_25.jpg)  |
-| ![](./preview/Screenshot_26.jpg)   |  ![](./preview/Screenshot_27.jpg)   |  |  |
+| ![](./preview/Screenshot_26.jpg)   |  ![](./preview/Screenshot_27.jpg)   | ![](./preview/lottie.gif)         |  |
 
-**觉得还可以的话，来个Star、Fork支持一波！有问题欢迎提Issue。**
+**觉得还可以的话，来个Star、Fork支持一波！本项目持续维护中，有问题欢迎提Issue。**
 
-## 实现内容
+## 实现内容（已迁移到空安全）
 
 * mvp模式
 * 使用`provider` (5.x 版本)做状态管理
@@ -49,11 +49,12 @@
 * 自定义简易日历
 * 曲线图及[饼状图](https://dartpad.cn/d06f8f737d6eb2d87978eb2d14b87864)
 * 模块化路由管理
+* 更多Demo（水波纹动画、刮刮卡、lottie）
 * 更多的细节优化
 
 具体可以下载体验：
 
-Android版安装包：[点击下载](https://www.pgyer.com/gYXj)，安装密码：`111111`。
+Android版安装包：[点击下载](https://www.pgyer.com/gYXj)，下载密码：`111111`。
 
 iOS需要自行下载代码运行。
 
@@ -63,9 +64,9 @@ Web体验地址：https://simplezhli.github.io/flutter_deer/
 
 [![Build Status](https://github.com/simplezhli/flutter_deer/workflows/flutter_deer%20driver/badge.svg?branch=master)](https://github.com/simplezhli/flutter_deer/actions?query=workflow%3A%22flutter_deer+driver%22+branch%3Amaster)
 
-    1. Flutter version 2.0.3
+    1. Flutter version 2.2.1
      
-    2. Dart version 2.12.2
+    2. Dart version 2.13.1
 
 ## 注意事项
 
@@ -81,7 +82,7 @@ Web体验地址：https://simplezhli.github.io/flutter_deer/
 
 - 因为页面有点多，一开始可能会导致页面无法与设计图对应上。我在代码注释中有添加设计图的相对路径，可以搜索或查找到对应页面，希望对你有帮助。
 
-- 本项目使用FlutterJsonBeanFactory插件来生成Bean。FlutterJsonBeanFactory插件使用可以查看[这篇文章](https://www.jianshu.com/p/14cbcbaa74b7)。
+- 本项目使用[FlutterJsonBeanFactory](https://github.com/zhangruiyu/FlutterJsonBeanFactory)插件来生成Bean。
 
 - Web受制于js等资源过大和部署在Github上，访问会慢一些。
 
@@ -118,6 +119,8 @@ Web体验地址：https://simplezhli.github.io/flutter_deer/
 - [【译】正确操作Dart中的字符串](https://weilu.blog.csdn.net/article/details/107857569)
 
 - [【译】学习Flutter中新的Navigator和Router系统](https://weilu.blog.csdn.net/article/details/108902282)
+
+- [【译】Flutter 2.2中的新功能](https://weilu.blog.csdn.net/article/details/117061293)
     
 ## 使用到的三方库
 
@@ -145,7 +148,9 @@ Web体验地址：https://simplezhli.github.io/flutter_deer/
 | [sprintf](https://github.com/Naddiseo/dart-sprintf)                   | **格式化String**   |
 | [qr_code_scanner](https://github.com/juliuscanute/qr_code_scanner)     | **扫码功能** |
 | [intl](https://github.com/dart-lang/intl)     | **本地化** |
+| [device_info_plus](https://github.com/fluttercommunity/plus_plugins/tree/main/packages/device_info_plus)     | **获取设备信息** |
 | [vibration](https://github.com/benjamindean/flutter_vibration)     | **振动** |
+| [lottie](https://github.com/xvrh/lottie-flutter)     | **动画效果** |
 
 详细内容可以参看[pubspec.yaml](https://github.com/simplezhli/flutter_deer/blob/master/pubspec.yaml)文件    
 
@@ -159,8 +164,6 @@ Web体验地址：https://simplezhli.github.io/flutter_deer/
 
 * [x] 页面添加设计图路径注释，方便寻找对应的设计图。
 
-* [x] 项目中有使用这一套框架及组件，会同步修复及优化遇到的问题。
-
 * [x] 添加集成测试。
 
 * [x] 深色模式支持。
@@ -169,11 +172,13 @@ Web体验地址：https://simplezhli.github.io/flutter_deer/
 
 * [x] Web端支持。
 
-* [ ] 迁移到空安全。
+* [x] 迁移到空安全。（安装包减少135KB，10.3M -> 10.1M）
+
+* [ ] 迁移至Navigator 2.0。
 
 ## 已知存在问题：
 
-- 2.0.0 已知存在问题(#68571 #73351 #73388)
+- 2.0.0 已知存在问题(#68571 #73351 #73388 #74890 #79773 #79931)
 
 - ListView在没有设置分割线的情况下，个别Item之间存在大约1像素的间隔（[像素对齐问题](https://github.com/flutter/flutter/issues/14288)）。
 
@@ -191,7 +196,7 @@ Web体验地址：https://simplezhli.github.io/flutter_deer/
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
 
-       http://www.apache.org/licenses/LICENSE-2.0
+       https://www.apache.org/licenses/LICENSE-2.0
 
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
